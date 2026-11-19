@@ -1,0 +1,29 @@
+{
+  "name": "COMMUNICATE AI – SRI PRATIBHA HIGH SCHOOL",
+  "short_name": "Communicate AI",
+  "description": "COMMUNICATE AI — An Assistive Technology Initiative by SRI PRATIBHA HIGH SCHOOL. Every voice deserves to be heard.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#0B4AA2",
+  "theme_color": "#0B4AA2",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["education", "accessibility", "medical"],
+  "prefer_related_applications": false,
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "screenshots": [
+    {"src": "icons/screenshot-mobile.png", "sizes": "540x1170", "type": "image/png", "form_factor": "narrow", "label": "COMMUNICATE AI – SRI PRATIBHA HIGH SCHOOL"}
+  ],
+  "shortcuts": [
+    {"name": "Quick Help", "short_name": "Help", "url": "./index.html#sos", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Type to Speak", "short_name": "Type", "url": "./index.html#type", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Live Captions", "short_name": "Captions", "url": "./index.html#listen", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
+  ]
+}

@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>COMMUNICATE AI – SRI PRATIBHA HIGH SCHOOL</title>
+<meta name="description" content="COMMUNICATE AI — An Assistive Technology Initiative by SRI PRATIBHA HIGH SCHOOL. Every voice deserves to be heard.">
+<meta name="application-name" content="COMMUNICATE AI">
+<meta name="apple-mobile-web-app-title" content="Communicate AI">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0B4AA2">
+<meta name="author" content="SRI PRATIBHA HIGH SCHOOL">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+:root{
+  --blue:#0B4AA2; --blue-d:#073273; --blue-l:#E8F0FC; --blue-m:#3D7BD9;
+  --white:#FFFFFF; --ink:#13233F; --muted:#5B6B86; --line:#D5E1F3;
+  --red:#C62828; --red-l:#FDECEC; --green:#1B7F4B;
+  --radius:16px; --tile:1;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:"Segoe UI",Roboto,"Noto Sans","Noto Sans Telugu","Noto Sans Devanagari",system-ui,sans-serif;
+  background:var(--blue-l);color:var(--ink);display:flex;flex-direction:column;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- Splash ---------- */
+#splash{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,var(--blue) 0%,var(--blue-d) 100%);
+  color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;
+  transition:opacity .5s ease, visibility .5s}
+#splash.hide{opacity:0;visibility:hidden}
+#splash .logo-slot{width:112px;height:112px;margin-bottom:22px;border-color:rgba(255,255,255,.55);color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
+#splash .s-school{font-size:15px;letter-spacing:.18em;font-weight:700;opacity:.95}
+#splash .s-title{font-size:clamp(34px,9vw,52px);font-weight:800;letter-spacing:.04em;margin:10px 0 6px}
+#splash .s-rule{width:64px;height:3px;background:#fff;border-radius:3px;margin:8px auto 14px;opacity:.8}
+#splash .s-tag{font-size:14px;letter-spacing:.14em;font-weight:600;opacity:.92}
+#splash .s-init{position:absolute;bottom:calc(28px + var(--safe-b));font-size:12px;opacity:.8;letter-spacing:.06em;padding:0 20px}
+.dots{display:flex;gap:6px;margin-top:28px}
+.dots i{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.4;animation:dot 1.2s infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+@keyframes dot{50%{opacity:1;transform:translateY(-4px)}}
+
+/* ---------- Logo slot ---------- */
+.logo-slot{flex:none;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;
+  overflow:hidden;background:#fff;color:var(--muted);font-size:10px;font-weight:700;text-align:center;line-height:1.1;letter-spacing:.04em}
+.logo-slot img{width:100%;height:100%;object-fit:contain;background:#fff}
+.logo-slot.has{border-style:solid;border-color:#fff}
+
+/* ---------- Header ---------- */
+header.app{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-d) 100%);color:#fff;
+  padding:calc(14px + var(--safe-t)) 16px 16px;position:relative}
+.h-row{display:flex;align-items:center;gap:12px;max-width:1100px;margin:0 auto}
+header .logo-slot{width:58px;height:58px;border-color:rgba(255,255,255,.55);color:rgba(255,255,255,.85);background:rgba(255,255,255,.1)}
+.h-text{flex:1;min-width:0}
+.h-title{margin:0;font-size:clamp(22px,5.4vw,30px);font-weight:800;letter-spacing:.05em;line-height:1.1}
+.h-school{margin:3px 0 0;font-size:clamp(12px,3.4vw,15px);font-weight:700;letter-spacing:.12em}
+.h-tag{margin:4px 0 0;font-size:11px;letter-spacing:.1em;opacity:.85;font-weight:600}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);
+  color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.icon-btn svg{width:22px;height:22px}
+
+/* ---------- Message bar ---------- */
+.msgbar{max-width:1100px;margin:12px auto 0;background:#fff;color:var(--ink);border-radius:14px;padding:10px 10px 10px 14px;
+  display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(7,50,115,.25)}
+.msgbar .msg{flex:1;min-height:28px;font-size:18px;font-weight:600;word-break:break-word}
+.msgbar .msg.empty{color:var(--muted);font-weight:500;font-size:15px}
+.mb-btn{border:0;border-radius:10px;height:42px;min-width:42px;padding:0 12px;display:flex;align-items:center;gap:6px;font-weight:700}
+.mb-btn svg{width:20px;height:20px}
+.mb-speak{background:var(--blue);color:#fff}
+.mb-ghost{background:var(--blue-l);color:var(--blue)}
+.mb-build{background:var(--blue-l);color:var(--blue);position:relative}
+.mb-build[aria-pressed="true"]{background:var(--green);color:#fff}
+
+/* ---------- Sentence builder strip ---------- */
+.strip{max-width:1100px;margin:8px auto 0;background:rgba(255,255,255,.14);border:1.5px dashed rgba(255,255,255,.45);
+  border-radius:14px;padding:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.strip[hidden]{display:none!important}
+.strip .sw{flex:1 1 100%;display:flex;gap:6px;flex-wrap:wrap;min-height:44px;align-items:center}
+.strip .ph{color:rgba(255,255,255,.8);font-size:14px;font-weight:600;padding:0 4px}
+.word{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--ink);border:0;
+  border-radius:999px;padding:6px 10px;font-weight:700;font-size:15px;max-width:100%}
+.word .wi{font-size:17px;line-height:1;flex:none}
+.word .wi img{width:20px;height:20px;border-radius:4px;object-fit:cover;display:block}
+.word .wt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
+.word .wx{width:20px;height:20px;border-radius:50%;background:var(--blue-l);color:var(--muted);
+  font-size:14px;line-height:18px;text-align:center;flex:none}
+.strip .sa{display:flex;gap:6px;flex:1 1 100%;justify-content:flex-end;flex-wrap:wrap}
+.strip .sa button{border:0;border-radius:10px;height:38px;padding:0 12px;font-weight:700;font-size:14px;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;flex:none}
+.strip .sa .s-speak{background:#fff;color:var(--blue-d)}
+.strip .sa .s-ghost{background:rgba(255,255,255,.2);color:#fff}
+.strip .sa svg{width:17px;height:17px}
+
+/* ---------- Update banner ---------- */
+.updbar{position:fixed;left:12px;right:12px;bottom:calc(74px + var(--safe-b));z-index:70;background:var(--blue-d);color:#fff;
+  border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(7,50,115,.45)}
+.updbar.show{display:flex}
+.updbar .ut{flex:1;font-size:14px;font-weight:600;line-height:1.3}
+.updbar button{border:0;border-radius:10px;height:38px;padding:0 14px;font-weight:700;font-size:14px}
+.updbar .u-now{background:#fff;color:var(--blue-d)}
+.updbar .u-later{background:rgba(255,255,255,.18);color:#fff}
+
+/* ---------- Main ---------- */
+main{flex:1;width:100%;max-width:1100px;margin:0 auto;padding:16px 14px 8px}
+.view{display:none}.view.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}}
+h2.v-title{font-size:19px;margin:4px 0 4px;color:var(--blue-d)}
+p.v-sub{margin:0 0 14px;color:var(--muted);font-size:14px}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px;color:var(--blue-d)}
+.chip[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(140px * var(--tile)),1fr));gap:12px}
+.tile{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 10px 12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;
+  min-height:calc(128px * var(--tile));box-shadow:0 2px 0 var(--line);transition:transform .08s, box-shadow .08s, border-color .15s}
+.tile:active{transform:translateY(2px);box-shadow:none}
+.tile.speaking{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,74,162,.25)}
+.tile .em{font-size:calc(38px * var(--tile));line-height:1}
+.tile .en{font-weight:700;font-size:calc(15px * var(--tile));color:var(--ink);line-height:1.2}
+.tile .loc{font-size:calc(13px * var(--tile));color:var(--blue);font-weight:600;line-height:1.25}
+.tile .del{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;border:0;background:var(--blue-l);color:var(--muted);font-size:16px;line-height:1}
+.tile.add{border-style:dashed;color:var(--blue);background:transparent;box-shadow:none}
+/* photo cards */
+.tile .em.pic{width:calc(62px * var(--tile));height:calc(62px * var(--tile));border-radius:12px;overflow:hidden;
+  background:var(--blue-l);display:flex;align-items:center;justify-content:center}
+.tile .em.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.tile .badge{position:absolute;top:6px;left:6px;background:var(--blue-l);color:var(--blue);border-radius:999px;
+  font-size:10px;font-weight:800;letter-spacing:.06em;padding:3px 7px;line-height:1}
+
+.sos .tile{background:var(--red-l);border-color:#F3C1C1;box-shadow:0 2px 0 #F3C1C1}
+.sos .tile .loc{color:var(--red)}
+.sos .tile.speaking{border-color:var(--red);box-shadow:0 0 0 3px rgba(198,40,40,.25)}
+.sos-banner{background:var(--red);color:#fff;border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:center}
+.sos-banner b{font-size:17px}
+
+.card{background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+textarea.big{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:18px;resize:vertical;outline:none}
+textarea.big:focus,input.f:focus,select.f:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,74,162,.15)}
+.sugg{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px;min-height:38px}
+.sugg button{border:1.5px solid var(--line);background:var(--blue-l);color:var(--blue-d);border-radius:10px;padding:7px 12px;font-weight:600}
+.sugg .lbl{font-size:12px;color:var(--muted);align-self:center;font-weight:700;letter-spacing:.06em}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:700;display:inline-flex;align-items:center;gap:8px;font-size:15px}
+.btn svg{width:20px;height:20px}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.ghost{background:var(--blue-l);color:var(--blue-d)}
+.btn.danger{background:var(--red-l);color:var(--red)}
+.btn:disabled{opacity:.5}
+
+.hist{list-style:none;margin:0;padding:0}
+.hist li{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.hist li:first-child{border-top:0}
+.hist .t{flex:1;font-weight:600}
+.hist button{border:0;background:var(--blue-l);color:var(--blue);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center}
+.hist button svg{width:18px;height:18px}
+.empty-note{color:var(--muted);font-size:14px;margin:4px 0}
+
+.caption-box{background:var(--ink);color:#fff;border-radius:var(--radius);min-height:220px;padding:18px;font-size:clamp(22px,5vw,32px);
+  font-weight:600;line-height:1.35;overflow:auto;max-height:50vh}
+.caption-box .interim{opacity:.55}
+.caption-box .ph{opacity:.5;font-size:17px;font-weight:500}
+.mic{width:84px;height:84px;border-radius:50%;border:0;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(11,74,162,.35)}
+.mic svg{width:38px;height:38px}
+.mic.on{background:var(--red);animation:pulse 1.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(198,40,40,.5)}70%{box-shadow:0 0 0 20px rgba(198,40,40,0)}100%{box-shadow:0 0 0 0 rgba(198,40,40,0)}}
+.notice{background:#FFF8E1;border:1px solid #F6D77B;color:#6B4E00;border-radius:12px;padding:10px 12px;font-size:14px;margin-top:12px}
+
+label.fl{display:block;font-weight:700;font-size:14px;margin:14px 0 6px;color:var(--blue-d)}
+select.f,input.f{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;outline:none}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.logo-edit{display:flex;align-items:center;gap:16px}
+.logo-edit .logo-slot{width:88px;height:88px}
+
+/* About */
+.about-hero{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-d) 100%);color:#fff;border-radius:var(--radius);padding:24px 18px;text-align:center;margin-bottom:14px}
+.about-hero .logo-slot{width:96px;height:96px;margin:0 auto 14px;border-color:rgba(255,255,255,.55);color:rgba(255,255,255,.85);background:rgba(255,255,255,.1)}
+.about-hero h3{margin:0;font-size:28px;letter-spacing:.05em}
+.about-hero .school{margin:4px 0 8px;font-weight:700;letter-spacing:.12em;font-size:15px}
+.about-hero .tag{font-size:12px;letter-spacing:.14em;opacity:.9;font-weight:600}
+.initiative{background:#fff;border:2px solid var(--blue);border-radius:var(--radius);padding:14px 16px;text-align:center;font-weight:700;color:var(--blue-d);margin-bottom:14px;font-size:16px}
+.feat{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.feat div{background:var(--blue-l);border-radius:12px;padding:12px}
+.feat b{display:block;color:var(--blue-d);margin-bottom:2px}
+.feat span{font-size:14px;color:var(--muted)}
+.card h4{margin:0 0 8px;color:var(--blue-d)}
+.card p{margin:6px 0;line-height:1.5}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.meta dt{color:var(--muted)}.meta dd{margin:0;font-weight:600}
+
+/* ---------- Footer & nav ---------- */
+footer.app{text-align:center;padding:14px 16px 10px;color:var(--muted);font-size:12px;line-height:1.5}
+footer.app .fs{font-weight:800;color:var(--blue-d);letter-spacing:.1em;font-size:13px}
+footer .flogo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px}
+footer .logo-slot{width:28px;height:28px;font-size:0}
+nav.tabs{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;
+  padding:6px 4px calc(6px + var(--safe-b));z-index:20;box-shadow:0 -4px 16px rgba(7,50,115,.06)}
+nav.tabs button{flex:1;max-width:120px;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 2px;border-radius:12px;color:var(--muted);font-size:12px;font-weight:700}
+nav.tabs svg{width:24px;height:24px}
+nav.tabs button[aria-selected="true"]{color:var(--blue);background:var(--blue-l)}
+nav.tabs button.sosn[aria-selected="true"]{color:var(--red);background:var(--red-l)}
+nav.tabs button.sosn{color:var(--red)}
+
+/* ---------- Overlays ---------- */
+.overlay{position:fixed;inset:0;z-index:60;display:none}
+.overlay.open{display:flex}
+#showText{background:#fff;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center}
+#showText .big{font-size:clamp(34px,9vw,80px);font-weight:800;color:var(--blue-d);line-height:1.2;word-break:break-word}
+#showText .who{position:absolute;top:calc(16px + var(--safe-t));left:0;right:0;font-size:12px;letter-spacing:.14em;font-weight:700;color:var(--blue)}
+#showText .close{position:absolute;bottom:calc(24px + var(--safe-b))}
+/* Quick Help: make the large message unmistakable */
+#showText.alert{animation:alertFlash 1s ease-in-out 3}
+#showText.alert .big{color:var(--red)}
+#showText.alert .who{color:var(--red)}
+@keyframes alertFlash{0%,100%{background:#fff}50%{background:var(--red-l)}}
+@media (prefers-reduced-motion:reduce){#showText.alert{animation:none;background:var(--red-l)}}
+.sheet-bg{background:rgba(7,30,70,.45);align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + var(--safe-b));box-shadow:0 -10px 30px rgba(0,0,0,.2)}
+@media (min-width:700px){.sheet-bg{align-items:center}.sheet{border-radius:20px}}
+.sheet h3{margin:0 0 4px;color:var(--blue-d)}
+
+.install{position:fixed;left:12px;right:12px;bottom:calc(84px + var(--safe-b));z-index:40;max-width:520px;margin:0 auto;background:#fff;
+  border:1.5px solid var(--line);border-radius:16px;box-shadow:0 12px 30px rgba(7,50,115,.25);padding:14px;display:none;gap:12px;align-items:center}
+.install.show{display:flex}
+.install .logo-slot{width:48px;height:48px}
+.install .it{flex:1;min-width:0}
+.install b{display:block;color:var(--blue-d)}
+.install small{color:var(--muted);font-weight:600;letter-spacing:.06em;font-size:11px}
+.toast{position:fixed;left:50%;bottom:calc(96px + var(--safe-b));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
+  padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.25s;z-index:80;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (min-width:900px){ .grid{grid-template-columns:repeat(auto-fill,minmax(calc(160px * var(--tile)),1fr))} }
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ============ SPLASH ============ -->
+<div id="splash" role="img" aria-label="COMMUNICATE AI — SRI PRATIBHA HIGH SCHOOL">
+  <div class="logo-slot" data-logo>SCHOOL<br>LOGO</div>
+  <div class="s-school">SRI PRATIBHA HIGH SCHOOL</div>
+  <div class="s-title">COMMUNICATE AI</div>
+  <div class="s-rule"></div>
+  <div class="s-tag">EVERY VOICE DESERVES TO BE HEARD.</div>
+  <div class="dots"><i></i><i></i><i></i></div>
+  <div class="s-init">An Assistive Technology Initiative by SRI PRATIBHA HIGH SCHOOL</div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="app">
+  <div class="h-row">
+    <div class="logo-slot" data-logo title="School logo">SCHOOL<br>LOGO</div>
+    <div class="h-text">
+      <h1 class="h-title">COMMUNICATE AI</h1>
+      <p class="h-school">SRI PRATIBHA HIGH SCHOOL</p>
+      <p class="h-tag">EVERY VOICE DESERVES TO BE HEARD.</p>
+    </div>
+    <button class="icon-btn" id="openSettings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </div>
+  <div class="msgbar">
+    <div class="msg empty" id="lastMsg" aria-live="polite">Tap a card to speak.</div>
+    <button class="mb-btn mb-build" id="buildBtn" aria-pressed="false" aria-label="Sentence builder" title="Sentence builder — join cards into a sentence">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h7M4 12h10M4 17h5"/><path d="M17 14l3 3-3 3"/><path d="M20 17h-6"/></svg>
+    </button>
+    <button class="mb-btn mb-ghost" id="showBtn" aria-label="Show text in large letters" title="Show in large letters">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+    </button>
+    <button class="mb-btn mb-speak" id="repeatBtn" aria-label="Speak again">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      <span>Speak</span>
+    </button>
+  </div>
+
+  <!-- Sentence builder strip -->
+  <div class="strip" id="strip" hidden>
+    <div class="sw" id="stripWords" aria-live="polite" aria-label="Sentence being built"></div>
+    <div class="sa">
+      <button class="s-ghost" id="sBack" aria-label="Remove last word">⌫ Back</button>
+      <button class="s-ghost" id="sClear" aria-label="Clear sentence">Clear</button>
+      <button class="s-ghost" id="sSave" aria-label="Save sentence to My Phrases">★ Save</button>
+      <button class="s-speak" id="sSpeak" aria-label="Speak the whole sentence">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        Speak sentence
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MAIN ============ -->
+<main>
+  <!-- TALK -->
+  <section class="view active" id="v-talk" aria-label="Talk board">
+    <div class="chips" id="catChips" role="toolbar" aria-label="Categories"></div>
+    <div class="grid" id="board"></div>
+  </section>
+
+  <!-- TYPE -->
+  <section class="view" id="v-type" aria-label="Type to speak">
+    <h2 class="v-title">Type to Speak</h2>
+    <p class="v-sub">Type anything and COMMUNICATE AI will say it aloud. Smart suggestions learn the words you use most.</p>
+    <div class="card">
+      <label class="sr" for="typeBox">Message</label>
+      <textarea class="big" id="typeBox" placeholder="Type your message here…" autocomplete="off"></textarea>
+      <div class="sugg" id="sugg"></div>
+      <div class="row">
+        <button class="btn primary" id="typeSpeak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>Speak</button>
+        <button class="btn ghost" id="typeShow">Show Large</button>
+        <button class="btn ghost" id="typeSave">★ Save to My Phrases</button>
+        <button class="btn ghost" id="typeClear">Clear</button>
+      </div>
+    </div>
+    <div class="card">
+      <h4>Recently spoken</h4>
+      <ul class="hist" id="hist"></ul>
+    </div>
+  </section>
+
+  <!-- LISTEN -->
+  <section class="view" id="v-listen" aria-label="Listen and caption">
+    <h2 class="v-title">Listen &amp; Caption</h2>
+    <p class="v-sub">For students who are deaf or hard of hearing: speech around you is shown as large live captions.</p>
+    <div class="caption-box" id="captions" aria-live="polite"><span class="ph">Tap the microphone to start live captions.</span></div>
+    <div class="row" style="align-items:center;justify-content:center;margin-top:16px">
+      <button class="mic" id="micBtn" aria-label="Start listening">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg>
+      </button>
+    </div>
+    <div class="row" style="justify-content:center">
+      <button class="btn ghost" id="capClear">Clear captions</button>
+    </div>
+    <div class="notice" id="micNotice" hidden></div>
+  </section>
+
+  <!-- SOS -->
+  <section class="view sos" id="v-sos" aria-label="Quick help">
+    <div class="sos-banner">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><b>Quick Help</b><br><span style="font-size:14px;opacity:.95">Tap once — the message is spoken loudly and repeated.</span></div>
+    </div>
+    <div class="grid" id="sosBoard"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="view" id="v-about" aria-label="About">
+    <div class="about-hero">
+      <div class="logo-slot" data-logo>SCHOOL<br>LOGO</div>
+      <h3>COMMUNICATE AI</h3>
+      <div class="school">SRI PRATIBHA HIGH SCHOOL</div>
+      <div class="tag">EVERY VOICE DESERVES TO BE HEARD.</div>
+    </div>
+    <div class="initiative">An Assistive Technology Initiative by SRI PRATIBHA HIGH SCHOOL</div>
+    <div class="card">
+      <h4>Our Mission</h4>
+      <p>COMMUNICATE AI is an innovation project of <b>SRI PRATIBHA HIGH SCHOOL</b> that helps students and people with speech, hearing or language difficulties express themselves with confidence — in English, తెలుగు and हिन्दी.</p>
+      <p>We believe that no one should be left out of a conversation. Every voice deserves to be heard.</p>
+    </div>
+    <div class="card">
+      <h4>What it does</h4>
+      <div class="feat">
+        <div><b>🗣️ Talk Board</b><span>Picture cards that speak everyday needs, feelings and classroom phrases.</span></div>
+        <div><b>⌨️ Type to Speak</b><span>Type any message and hear it aloud, with smart word suggestions.</span></div>
+        <div><b>👂 Live Captions</b><span>Turns nearby speech into large on-screen text.</span></div>
+        <div><b>🆘 Quick Help</b><span>One-tap emergency messages for teachers and staff.</span></div>
+        <div><b>🌐 Three languages</b><span>English, Telugu and Hindi speech and labels.</span></div>
+        <div><b>📴 Works offline</b><span>Install once and use it anywhere in school.</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h4>Install on your phone</h4>
+      <p><b>Android (Chrome):</b> tap <b>Install</b> when prompted, or open the ⋮ menu → <b>Install app</b>.</p>
+      <p><b>iPhone / iPad (Safari):</b> tap Share → <b>Add to Home Screen</b>.</p>
+      <div class="row"><button class="btn primary" id="aboutInstall" hidden>Install COMMUNICATE AI</button></div>
+    </div>
+    <div class="card">
+      <h4>Project details</h4>
+      <dl class="meta">
+        <dt>Application</dt><dd>COMMUNICATE AI</dd>
+        <dt>Institution</dt><dd>SRI PRATIBHA HIGH SCHOOL</dd>
+        <dt>Category</dt><dd>Assistive Technology</dd>
+        <dt>Version</dt><dd>1.0.0</dd>
+        <dt>Privacy</dt><dd>All data stays on this device.</dd>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="app">
+  <div class="flogo"><div class="logo-slot" data-logo></div><span class="fs">SRI PRATIBHA HIGH SCHOOL</span></div>
+  COMMUNICATE AI · An Assistive Technology Initiative<br>
+  © <span id="yr"></span> SRI PRATIBHA HIGH SCHOOL. All rights reserved.
+</footer>
+
+<!-- ============ NAV ============ -->
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button role="tab" data-view="talk" aria-selected="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Talk</button>
+  <button role="tab" data-view="type" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M7 15h10"/></svg>Type</button>
+  <button role="tab" data-view="listen" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5a6 6 0 1 1 12 0c0 4-4 5-4 9a3 3 0 0 1-6 0"/><path d="M10 8.5a2 2 0 1 1 4 0"/></svg>Listen</button>
+  <button role="tab" data-view="sos" class="sosn" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Help</button>
+  <button role="tab" data-view="about" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/></svg>About</button>
+</nav>
+
+<!-- ============ OVERLAYS ============ -->
+<div class="overlay" id="showText" role="dialog" aria-modal="true" aria-label="Message in large letters">
+  <div class="who">COMMUNICATE AI · SRI PRATIBHA HIGH SCHOOL</div>
+  <div class="big" id="showBig"></div>
+  <button class="btn primary close" id="showClose">Close</button>
+</div>
+
+<div class="overlay sheet-bg" id="settings" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="sheet">
+    <h3 id="setTitle">Settings</h3>
+    <div style="color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.06em">COMMUNICATE AI · SRI PRATIBHA HIGH SCHOOL</div>
+
+    <label class="fl">School logo</label>
+    <div class="logo-edit">
+      <div class="logo-slot" data-logo>SCHOOL<br>LOGO</div>
+      <div>
+        <button class="btn primary" id="logoPick">Upload logo</button>
+        <button class="btn ghost" id="logoRemove" hidden>Remove</button>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">PNG or JPG, square works best. Shown on splash, header, About and footer.</div>
+      </div>
+      <input type="file" id="logoFile" accept="image/*" class="sr">
+    </div>
+
+    <label class="fl" for="langSel">Speaking language</label>
+    <select class="f" id="langSel">
+      <option value="en">English</option>
+      <option value="te">తెలుగు (Telugu)</option>
+      <option value="hi">हिन्दी (Hindi)</option>
+    </select>
+
+    <label class="fl" for="voiceSel">Voice</label>
+    <select class="f" id="voiceSel"></select>
+    <div id="voiceNote" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
+
+    <label class="fl" for="rate">Speaking speed: <span id="rateV"></span></label>
+    <input type="range" id="rate" min="0.6" max="1.4" step="0.1">
+
+    <label class="fl" for="tileSize">Card size: <span id="tileV"></span></label>
+    <input type="range" id="tileSize" min="0.9" max="1.4" step="0.1">
+
+    <div class="row" style="justify-content:space-between">
+      <button class="btn danger" id="resetAll">Reset app data</button>
+      <button class="btn primary" id="closeSettings">Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay sheet-bg" id="addSheet" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+  <div class="sheet">
+    <h3 id="addTitle">Add My Phrase</h3>
+    <label class="fl" for="addText">Phrase</label>
+    <input class="f" id="addText" placeholder="e.g. My name is Ravi" maxlength="120">
+
+    <label class="fl" for="addLang">Spoken in</label>
+    <select class="f" id="addLang">
+      <option value="en">English</option>
+      <option value="te">తెలుగు (Telugu)</option>
+      <option value="hi">हिन्दी (Hindi)</option>
+    </select>
+
+    <label class="fl">Picture</label>
+    <div class="logo-edit">
+      <div class="logo-slot" id="addPrev" style="border-radius:12px;width:64px;height:64px;font-size:22px">⭐</div>
+      <div>
+        <button class="btn primary" id="addPhoto">📷 Take / choose photo</button>
+        <button class="btn ghost" id="addPhotoClear" hidden>Use emoji instead</button>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">A real photo — your own teacher, your water bottle, your mother — is far easier to recognise than an emoji.</div>
+      </div>
+      <input type="file" id="addPhotoFile" accept="image/*" capture="environment" class="sr">
+    </div>
+
+    <label class="fl" for="addEmoji">…or an emoji</label>
+    <input class="f" id="addEmoji" placeholder="⭐" maxlength="4">
+
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn ghost" id="addCancel">Cancel</button>
+      <button class="btn primary" id="addOk">Add</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay sheet-bg" id="confirmSheet" role="dialog" aria-modal="true">
+  <div class="sheet">
+    <h3 id="confirmText">Are you sure?</h3>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn ghost" id="confirmNo">Cancel</button>
+      <button class="btn danger" id="confirmYes">Yes</button>
+    </div>
+  </div>
+</div>
+
+<div class="install" id="installBar" role="dialog" aria-label="Install COMMUNICATE AI">
+  <div class="logo-slot" data-logo></div>
+  <div class="it"><b>Install COMMUNICATE AI</b><small>SRI PRATIBHA HIGH SCHOOL</small></div>
+  <button class="btn ghost" id="installLater">Later</button>
+  <button class="btn primary" id="installNow">Install</button>
+</div>
+
+<div class="updbar" id="updBar" role="alert">
+  <div class="ut"><b>New version available</b><br>Update to get the latest phrases and fixes.</div>
+  <button class="u-later" id="updLater">Later</button>
+  <button class="u-now" id="updNow">Update</button>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+"use strict";
+const SCHOOL = "SRI PRATIBHA HIGH SCHOOL";
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+
+/* ---------- storage (safe) ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem("cai:"+k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem("cai:"+k, JSON.stringify(v)); return true; }catch(e){ return false; } },
+  clear(){ try{ Object.keys(localStorage).filter(k=>k.startsWith("cai:")).forEach(k=>localStorage.removeItem(k)); }catch(e){} }
+};
+
+/* ---------- phrase data ---------- */
+const CATS = [
+  {id:"greet", name:"Greetings", em:"👋", items:[
+    ["👋","Hello","नमस्ते","నమస్కారం"],
+    ["☀️","Good morning","सुप्रभात","శుభోదయం"],
+    ["🙏","Thank you","धन्यवाद","ధన్యవాదాలు"],
+    ["🤲","Please","कृपया","దయచేసి"],
+    ["😔","Sorry","माफ़ कीजिए","క్షమించండి"],
+    ["✅","Yes","हाँ","అవును"],
+    ["❌","No","नहीं","కాదు"],
+    ["🚶","Goodbye","अलविदा","వెళ్ళొస్తాను"]]},
+  {id:"needs", name:"My Needs", em:"🙋", items:[
+    ["💧","I want water","मुझे पानी चाहिए","నాకు నీళ్ళు కావాలి"],
+    ["🚻","I need to use the toilet","मुझे शौचालय जाना है","నేను బాత్‌రూమ్‌కి వెళ్ళాలి"],
+    ["🍱","I am hungry","मुझे भूख लगी है","నాకు ఆకలిగా ఉంది"],
+    ["🙋","I need help","मुझे मदद चाहिए","నాకు సహాయం కావాలి"],
+    ["🛌","I want to rest","मुझे आराम करना है","నేను విశ్రాంతి తీసుకోవాలి"],
+    ["✋","Please wait","कृपया रुकिए","దయచేసి ఆగండి"],
+    ["🏠","I want to go home","मुझे घर जाना है","నేను ఇంటికి వెళ్ళాలి"],
+    ["🔁","Please repeat","कृपया दोबारा बोलिए","దయచేసి మళ్ళీ చెప్పండి"]]},
+  {id:"feel", name:"Feelings", em:"😊", items:[
+    ["😊","I am happy","मैं खुश हूँ","నేను సంతోషంగా ఉన్నాను"],
+    ["😢","I am sad","मैं उदास हूँ","నేను బాధగా ఉన్నాను"],
+    ["😴","I am tired","मुझे थकान हो रही है","నాకు అలసటగా ఉంది"],
+    ["🤒","I feel sick","मेरी तबीयत ठीक नहीं है","నాకు ఒంట్లో బాగాలేదు"],
+    ["😨","I am scared","मुझे डर लग रहा है","నాకు భయంగా ఉంది"],
+    ["😠","I am angry","मुझे गुस्सा आ रहा है","నాకు కోపంగా ఉంది"],
+    ["👍","I am okay","मैं ठीक हूँ","నేను బాగున్నాను"],
+    ["🤕","I have pain","मुझे दर्द हो रहा है","నాకు నొప్పిగా ఉంది"]]},
+  {id:"class", name:"Classroom", em:"🏫", items:[
+    ["✋","I have a question","मेरा एक सवाल है","నాకు ఒక సందేహం ఉంది"],
+    ["🤔","I don't understand","मुझे समझ नहीं आया","నాకు అర్థం కాలేదు"],
+    ["💡","I understand","मुझे समझ आ गया","నాకు అర్థమైంది"],
+    ["🐢","Please speak slowly","कृपया धीरे बोलिए","దయచేసి నెమ్మదిగా మాట్లాడండి"],
+    ["✏️","Can I borrow a pencil?","क्या मुझे पेंसिल मिलेगी?","నాకు పెన్సిల్ ఇస్తారా?"],
+    ["📗","I finished my work","मेरा काम हो गया","నా పని పూర్తయింది"],
+    ["📝","Please write it on the board","कृपया बोर्ड पर लिखिए","దయచేసి బోర్డు మీద రాయండి"],
+    ["🚪","May I come in?","क्या मैं अंदर आऊँ?","లోపలికి రావచ్చా?"]]},
+  {id:"mine", name:"My Phrases", em:"⭐", items:[]}
+];
+const SOS = [
+  ["🆘","Help me!","मेरी मदद कीजिए!","నాకు సహాయం చేయండి!"],
+  ["👩‍🏫","Please call my teacher","मेरे शिक्षक को बुलाइए","దయచేసి మా టీచర్‌ని పిలవండి"],
+  ["📞","Please call my parents","मेरे माता-पिता को बुलाइए","దయచేసి మా అమ్మానాన్నలను పిలవండి"],
+  ["🩹","I am hurt","मुझे चोट लगी है","నాకు దెబ్బ తగిలింది"],
+  ["😮‍💨","I cannot breathe well","मुझे साँस लेने में तकलीफ़ है","నాకు ఊపిరి తీసుకోవడం కష్టంగా ఉంది"],
+  ["💫","I feel dizzy","मुझे चक्कर आ रहा है","నాకు కళ్ళు తిరుగుతున్నాయి"]
+];
+const LANG = { en:{idx:1, code:"en-IN", alt:["en-IN","en-GB","en-US","en"]},
+               hi:{idx:2, code:"hi-IN", alt:["hi-IN","hi"]},
+               te:{idx:3, code:"te-IN", alt:["te-IN","te"]} };
+
+/* ---------- state ---------- */
+const S = {
+  lang: store.get("lang","en"),
+  voice: store.get("voice",""),
+  rate: store.get("rate",0.9),
+  tile: store.get("tile",1),
+  cat: store.get("cat","needs"),
+  mine: store.get("mine",[]),
+  hist: store.get("hist",[]),
+  freq: store.get("freq",{}),
+  logo: store.get("logo",null),
+  build: store.get("build",false),
+  last: "",
+  sentence: []            // [{icon, text, lang}] – not persisted, a sentence is momentary
+};
+CATS.find(c=>c.id==="mine").items = S.mine;
+
+/* ---------- toast & confirm ---------- */
+let tT; function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove("show"),2400); }
+function confirmBox(text, yes){ $("#confirmText").textContent=text; openSheet("#confirmSheet");
+  $("#confirmYes").onclick=()=>{ closeSheet("#confirmSheet"); yes(); }; $("#confirmNo").onclick=()=>closeSheet("#confirmSheet"); }
+function openSheet(s){ $(s).classList.add("open"); }
+function closeSheet(s){ $(s).classList.remove("open"); }
+$$(".sheet-bg").forEach(o=>o.addEventListener("click",e=>{ if(e.target===o) o.classList.remove("open"); }));
+
+/* ---------- logo ---------- */
+function renderLogo(){
+  $$("[data-logo]").forEach(el=>{
+    if(S.logo){ el.innerHTML=""; const i=new Image(); i.src=S.logo; i.alt=SCHOOL+" logo"; el.appendChild(i); el.classList.add("has"); }
+    else { el.classList.remove("has"); el.innerHTML = (el.closest("footer")||el.closest(".install")) ? "" : "SCHOOL<br>LOGO"; }
+  });
+  $("#logoRemove").hidden = !S.logo;
+  const l = document.querySelector('link[rel="icon"]'); if(S.logo && l){ l.href=S.logo; }
+}
+$("#logoPick").onclick=()=>$("#logoFile").click();
+$("#logoFile").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const img=new Image(), r=new FileReader();
+  r.onload=()=>{ img.onload=()=>{
+      const max=320, sc=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement("canvas"); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc);
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+      S.logo=c.toDataURL("image/png");
+      if(!store.set("logo",S.logo)) toast("Logo shown, but could not be saved on this device");
+      else toast("School logo updated");
+      renderLogo(); };
+    img.src=r.result; };
+  r.readAsDataURL(f); e.target.value="";
+};
+$("#logoRemove").onclick=()=>{ S.logo=null; store.set("logo",null); renderLogo(); toast("Logo removed"); };
+
+/* ---------- speech ---------- */
+const synth = window.speechSynthesis;
+let voices=[];
+function loadVoices(){
+  if(!synth) return; voices = synth.getVoices();
+  const sel=$("#voiceSel"), L=LANG[S.lang];
+  const match = voices.filter(v=>L.alt.some(a=>v.lang.replace("_","-").toLowerCase().startsWith(a.toLowerCase())));
+  sel.innerHTML = '<option value="">Automatic</option>' + match.map(v=>`<option value="${v.name}">${v.name} (${v.lang})</option>`).join("");
+  if(match.some(v=>v.name===S.voice)) sel.value=S.voice; else sel.value="";
+  const note=$("#voiceNote");
+  if(!match.length && S.lang!=="en") note.textContent = "No "+(S.lang==="te"?"Telugu":"Hindi")+" voice found on this device. Install it in your phone’s Text-to-Speech settings (Google Speech Services) for best results.";
+  else note.textContent = match.length ? match.length+" voice(s) available." : "";
+}
+if(synth){ loadVoices(); synth.onvoiceschanged = loadVoices; }
+
+function pickVoice(lang){
+  const key = LANG[lang] ? lang : S.lang;
+  const L = LANG[key];
+  // an explicit per-phrase language must not be overridden by the global voice choice
+  if(key===S.lang && S.voice){ const v=voices.find(v=>v.name===S.voice); if(v) return v; }
+  for(const a of L.alt){ const v=voices.find(v=>v.lang.replace("_","-").toLowerCase().startsWith(a.toLowerCase())); if(v) return v; }
+  return null;
+}
+function speak(text, opts={}){
+  if(!text) return;
+  showLast(text);
+  if(!synth){ toast("Speech is not supported on this browser — showing text instead"); return; }
+  const lang = LANG[opts.lang] ? opts.lang : S.lang;
+  try{
+    synth.cancel();
+    const times = opts.repeat || 1;
+    for(let i=0;i<times;i++){
+      const u=new SpeechSynthesisUtterance(text);
+      const v=pickVoice(lang); if(v){ u.voice=v; u.lang=v.lang; } else u.lang=LANG[lang].code;
+      u.rate = opts.rate || S.rate; u.volume=1; u.pitch=1;
+      if(opts.onend && i===times-1) u.onend=opts.onend;
+      synth.speak(u);
+    }
+  }catch(e){ toast("Could not play speech"); }
+  if(opts.history!==false) addHist(text);
+}
+function showLast(t){ S.last=t; const m=$("#lastMsg"); m.textContent=t; m.classList.remove("empty"); }
+$("#repeatBtn").onclick=()=>{ S.last ? speak(S.last) : toast("Tap a card first"); };
+$("#showBtn").onclick=()=>{ S.last ? showBig(S.last) : toast("Tap a card first"); };
+function showBig(t, alert){ $("#showBig").textContent=t; $("#showText").classList.toggle("alert", !!alert); openSheet("#showText"); }
+$("#showClose").onclick=()=>closeSheet("#showText");
+
+/* ---------- sentence builder ---------- */
+/* Build mode ON: tapping a card speaks that word AND adds it to a strip,
+   so a non-verbal student can compose a whole sentence and say it at once. */
+function sentenceText(){ return S.sentence.map(w=>w.text).join(" ").replace(/\s+/g," ").trim(); }
+
+function sentenceLang(){
+  // speak the sentence in the language most of its words belong to
+  const n={}; S.sentence.forEach(w=>{ const l=LANG[w.lang]?w.lang:S.lang; n[l]=(n[l]||0)+1; });
+  return Object.keys(n).sort((a,b)=>n[b]-n[a])[0] || S.lang;
+}
+
+function renderStrip(){
+  const strip=$("#strip"); strip.hidden = !S.build;
+  $("#buildBtn").setAttribute("aria-pressed", S.build ? "true" : "false");
+  if(!S.build) return;
+  const box=$("#stripWords"); box.innerHTML="";
+  if(!S.sentence.length){
+    const p=document.createElement("span"); p.className="ph";
+    p.textContent="Tap cards to build a sentence, then press Speak sentence.";
+    box.appendChild(p); return;
+  }
+  S.sentence.forEach((w,i)=>{
+    const b=document.createElement("button"); b.className="word";
+    b.setAttribute("aria-label","Remove "+w.text);
+    const ic=document.createElement("span"); ic.className="wi";
+    if(typeof w.icon==="string" && w.icon.startsWith("data:")){
+      const im=new Image(); im.src=w.icon; im.alt=""; ic.appendChild(im);
+    } else ic.textContent = w.icon || "";
+    const tx=document.createElement("span"); tx.className="wt"; tx.textContent=w.text;
+    const x=document.createElement("span"); x.className="wx"; x.textContent="×";
+    b.append(ic,tx,x);
+    b.onclick=()=>{ S.sentence.splice(i,1); renderStrip(); };
+    box.appendChild(b);
+  });
+}
+
+function addWord(icon, text, lang){
+  S.sentence.push({icon, text, lang: LANG[lang] ? lang : S.lang});
+  renderStrip();
+}
+
+$("#buildBtn").onclick=()=>{
+  S.build=!S.build; store.set("build",S.build);
+  if(!S.build) S.sentence=[];
+  renderStrip();
+  toast(S.build ? "Sentence builder on — tap cards to join words" : "Sentence builder off");
+};
+$("#sBack").onclick=()=>{ if(!S.sentence.length) return toast("Nothing to remove"); S.sentence.pop(); renderStrip(); };
+$("#sClear").onclick=()=>{ if(!S.sentence.length) return toast("Nothing to clear"); S.sentence=[]; renderStrip(); };
+$("#sSpeak").onclick=()=>{
+  const t=sentenceText();
+  if(!t) return toast("Tap some cards first");
+  speak(t, {lang: sentenceLang()});
+};
+$("#sSave").onclick=()=>{
+  const t=sentenceText();
+  if(!t) return toast("Tap some cards first");
+  addMine(t, S.sentence[0] && S.sentence[0].icon || "⭐", sentenceLang());
+};
+
+/* ---------- history & smart suggestions ---------- */
+function addHist(t){
+  S.hist = [t, ...S.hist.filter(x=>x!==t)].slice(0,12); store.set("hist",S.hist);
+  t.toLowerCase().split(/[^\p{L}\p{M}']+/u).filter(w=>w.length>1).forEach(w=>S.freq[w]=(S.freq[w]||0)+1);
+  store.set("freq",S.freq); renderHist();
+}
+function renderHist(){
+  const ul=$("#hist");
+  if(!S.hist.length){ ul.innerHTML='<li class="empty-note">Nothing yet. Messages you speak will appear here.</li>'; return; }
+  ul.innerHTML="";
+  S.hist.forEach(t=>{ const li=document.createElement("li");
+    li.innerHTML=`<span class="t"></span><button aria-label="Speak again"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>`;
+    li.querySelector(".t").textContent=t; li.querySelector("button").onclick=()=>speak(t); ul.appendChild(li); });
+}
+const BASE_WORDS = "i,am,want,need,please,thank,you,help,water,food,toilet,teacher,friend,mother,father,home,school,class,book,pencil,pen,play,go,come,stop,wait,yes,no,happy,sad,tired,hungry,thirsty,sick,pain,today,tomorrow,now,later,can,may,have,my,name,is,the,to,a,with,not,understand,question,again,slowly,good,morning,sorry,okay,lunch,bus,library,ground,exam,homework,finished,where,what,when,why,how".split(",");
+const NEXT = { i:["am","want","need","have","don't","feel"], am:["happy","tired","hungry","sick","okay","sorry"], want:["water","to","help","food","rest"],
+  need:["help","water","to","rest"], please:["help","wait","repeat","come"], thank:["you"], my:["name","teacher","friend","mother","father"], to:["go","play","eat","rest"],
+  can:["i","you"], go:["home","to","outside"], name:["is"], feel:["sick","happy","tired","better"] };
+/* Two kinds of suggestion:
+     "replace" - finish the half-typed word  ("wat" -> "water")
+     "append"  - predict the NEXT word       ("i am" -> "happy", "tired", ...)
+   Ranking is personal: the words this device uses most come first. */
+function renderSugg(){
+  const box=$("#sugg"), ta=$("#typeBox"), v=ta.value;
+  const m=v.match(/([\p{L}\p{M}']*)$/u);
+  const cur=(m?m[1]:"").toLowerCase();
+  const words=v.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const freqSorted=Object.keys(S.freq).sort((a,b)=>S.freq[b]-S.freq[a]);
+  const pool=[...new Set([...freqSorted, ...BASE_WORDS])];
+
+  const out=[], seen=new Set();
+  const push=(w,mode)=>{ if(!w) return; const k=mode+":"+w; if(seen.has(k)) return; seen.add(k); out.push({w,mode}); };
+
+  if(cur){
+    pool.filter(w=>w.startsWith(cur) && w!==cur).forEach(w=>push(w,"replace"));
+    // the typed word is already whole -> also offer what usually follows it
+    if(pool.includes(cur)) (NEXT[cur]||[]).forEach(w=>push(w,"append"));
+  }else{
+    const prev=words[words.length-1];
+    (NEXT[prev]||[]).forEach(w=>push(w,"append"));
+    freqSorted.forEach(w=>push(w,"append"));
+    if(!out.length) BASE_WORDS.slice(0,8).forEach(w=>push(w,"append"));
+  }
+
+  const list=out.slice(0,6);
+  box.innerHTML = list.length ? '<span class="lbl">SUGGESTIONS</span>' : "";
+  list.forEach(({w,mode})=>{
+    const b=document.createElement("button"); b.textContent=w;
+    b.onclick=()=>{
+      ta.value = mode==="replace"
+        ? ta.value.replace(/([\p{L}\p{M}']*)$/u, w) + " "
+        : (ta.value.replace(/\s+$/,"") + " " + w + " ").replace(/^\s+/,"");
+      ta.focus(); renderSugg();
+    };
+    box.appendChild(b);
+  });
+}
+$("#typeBox").addEventListener("input",renderSugg);
+$("#typeSpeak").onclick=()=>{ const t=$("#typeBox").value.trim(); t ? speak(t) : toast("Type a message first"); };
+$("#typeShow").onclick=()=>{ const t=$("#typeBox").value.trim(); t ? (showLast(t), showBig(t)) : toast("Type a message first"); };
+$("#typeClear").onclick=()=>{ $("#typeBox").value=""; renderSugg(); $("#typeBox").focus(); };
+$("#typeSave").onclick=()=>{ const t=$("#typeBox").value.trim(); if(!t) return toast("Type a message first"); addMine(t,"⭐",S.lang); };
+
+/* ---------- boards ---------- */
+/* item = [icon, english, hindi, telugu, lang?]
+   icon may be an emoji OR a "data:image/..." photo.
+   lang is only set on user-made phrases, which exist in ONE language. */
+function isPhoto(ic){ return typeof ic==="string" && ic.startsWith("data:"); }
+function phraseLang(it){ return (it[4] && LANG[it[4]]) ? it[4] : S.lang; }
+function labelFor(it){
+  if(it[4] && LANG[it[4]]) return it[1];                       // user phrase: single language
+  return S.lang==="en" ? it[1] : (it[LANG[S.lang].idx] || it[1]); // fall back if no translation
+}
+
+function iconEl(ic){
+  const s=document.createElement("span"); s.className="em"; s.setAttribute("aria-hidden","true");
+  if(isPhoto(ic)){ s.classList.add("pic"); const i=new Image(); i.src=ic; i.alt=""; s.appendChild(i); }
+  else s.textContent = ic || "💬";
+  return s;
+}
+
+function tileEl(it, {sos=false, del=null}={}){
+  const b=document.createElement("button"); b.className="tile";
+  const spoken=labelFor(it), lang=phraseLang(it);
+  const custom = !!(it[4] && LANG[it[4]]);
+
+  b.appendChild(iconEl(it[0]));
+
+  const en=document.createElement("span"); en.className="en"; en.textContent=it[1]; b.appendChild(en);
+
+  // second line: the translation, but never for single-language user phrases
+  if(!custom && S.lang!=="en" && it[LANG[S.lang].idx]){
+    const lo=document.createElement("span"); lo.className="loc"; lo.textContent=it[LANG[S.lang].idx]; b.appendChild(lo);
+  }
+  // mark a user phrase whose language is not the one currently selected
+  if(custom && it[4]!==S.lang){
+    const bg=document.createElement("span"); bg.className="badge";
+    bg.textContent = it[4]==="te" ? "TE" : it[4]==="hi" ? "HI" : "EN";
+    bg.title = "Spoken in " + (it[4]==="te"?"Telugu":it[4]==="hi"?"Hindi":"English");
+    b.appendChild(bg);
+  }
+
+  b.setAttribute("aria-label", spoken);
+
+  b.onclick=()=>{
+    $$(".tile.speaking").forEach(x=>x.classList.remove("speaking"));
+    b.classList.add("speaking");
+    speak(spoken, { lang, repeat: sos?2:1, rate: sos?Math.min(S.rate,0.9):S.rate,
+                    onend:()=>b.classList.remove("speaking") });
+    if(sos){
+      showBig(spoken, true);
+      try{ if(navigator.vibrate) navigator.vibrate([250,120,250,120,400]); }catch(e){}
+    }
+    // Quick Help always fires immediately — never queued into a sentence
+    else if(S.build) addWord(it[0], spoken, lang);
+  };
+
+  if(del){ const d=document.createElement("span"); d.className="del"; d.setAttribute("role","button"); d.setAttribute("aria-label","Remove phrase"); d.textContent="×";
+    d.onclick=e=>{ e.stopPropagation(); confirmBox("Remove this phrase?", del); }; b.appendChild(d); }
+  return b;
+}
+function renderChips(){
+  const c=$("#catChips"); c.innerHTML="";
+  CATS.forEach(cat=>{ const b=document.createElement("button"); b.className="chip"; b.textContent=cat.em+"  "+cat.name;
+    b.setAttribute("aria-pressed", cat.id===S.cat); b.onclick=()=>{ S.cat=cat.id; store.set("cat",S.cat); renderChips(); renderBoard(); }; c.appendChild(b); });
+}
+function renderBoard(){
+  const g=$("#board"); g.innerHTML=""; const cat=CATS.find(c=>c.id===S.cat)||CATS[1];
+  cat.items.forEach((it,i)=>g.appendChild(tileEl(it, cat.id==="mine" ? {del:()=>{ S.mine.splice(i,1); store.set("mine",S.mine); renderBoard(); toast("Phrase removed"); }} : {})));
+  if(cat.id==="mine"){
+    const a=document.createElement("button"); a.className="tile add";
+    a.innerHTML='<span class="em">＋</span><span class="en" style="color:var(--blue)">Add phrase<br><small style="font-weight:600">emoji or photo</small></span>';
+    a.onclick=openAddSheet; g.appendChild(a);
+  }
+}
+function renderSos(){
+  const s=$("#sosBoard"); s.innerHTML=""; SOS.forEach(it=>s.appendChild(tileEl(it,{sos:true})));
+}
+
+function addMine(text, icon, lang){
+  const it=[icon||"⭐", text, text, text, LANG[lang] ? lang : S.lang];
+  S.mine.push(it);
+  if(!store.set("mine",S.mine)){
+    S.mine.pop();
+    return toast("Not enough space on this device. Remove a photo phrase and try again.");
+  }
+  toast("Saved to My Phrases");
+  if(S.cat==="mine") renderBoard();
+}
+
+/* ---------- add-phrase sheet (with real photos) ---------- */
+let addPhotoData=null;
+function setAddPrev(){
+  const p=$("#addPrev"); p.innerHTML="";
+  if(addPhotoData){ const i=new Image(); i.src=addPhotoData; i.alt=""; p.appendChild(i); p.classList.add("has"); }
+  else { p.classList.remove("has"); p.textContent = $("#addEmoji").value.trim() || "⭐"; }
+  $("#addPhotoClear").hidden = !addPhotoData;
+}
+function openAddSheet(){
+  $("#addText").value=""; $("#addEmoji").value=""; $("#addLang").value=S.lang;
+  addPhotoData=null; setAddPrev();
+  openSheet("#addSheet"); setTimeout(()=>$("#addText").focus(),50);
+}
+$("#addPhoto").onclick=()=>$("#addPhotoFile").click();
+$("#addPhotoFile").onchange=e=>{
+  const f=e.target.files && e.target.files[0]; e.target.value="";
+  if(!f) return;
+  const r=new FileReader();
+  r.onerror=()=>toast("Could not read that picture");
+  r.onload=()=>{
+    const img=new Image();
+    img.onerror=()=>toast("That file is not a picture");
+    img.onload=()=>{
+      // square cover-crop to 256px keeps localStorage small (~20 KB a photo)
+      const N=256, side=Math.min(img.width,img.height);
+      const c=document.createElement("canvas"); c.width=c.height=N;
+      const x=(img.width-side)/2, y=(img.height-side)/2;
+      c.getContext("2d").drawImage(img,x,y,side,side,0,0,N,N);
+      try{ addPhotoData=c.toDataURL("image/jpeg",0.82); }
+      catch(err){ return toast("Could not use that picture"); }
+      setAddPrev(); toast("Photo added");
+    };
+    img.src=r.result;
+  };
+  r.readAsDataURL(f);
+};
+$("#addPhotoClear").onclick=()=>{ addPhotoData=null; setAddPrev(); };
+$("#addEmoji").addEventListener("input",()=>{ if(!addPhotoData) setAddPrev(); });
+$("#addCancel").onclick=()=>closeSheet("#addSheet");
+$("#addOk").onclick=()=>{
+  const t=$("#addText").value.trim();
+  if(!t) return toast("Enter a phrase");
+  addMine(t, addPhotoData || $("#addEmoji").value.trim() || "⭐", $("#addLang").value);
+  closeSheet("#addSheet");
+};
+$("#addText").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#addOk").click(); });
+
+/* ---------- listen (speech-to-text) ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec=null, listening=false, finalTxt="";
+function capRender(interim=""){
+  const box=$("#captions");
+  if(!finalTxt && !interim){ box.innerHTML='<span class="ph">'+(listening?"Listening… speak now.":"Tap the microphone to start live captions.")+'</span>'; return; }
+  box.innerHTML=""; const f=document.createElement("span"); f.textContent=finalTxt; box.appendChild(f);
+  if(interim){ const i=document.createElement("span"); i.className="interim"; i.textContent=" "+interim; box.appendChild(i); }
+  box.scrollTop=box.scrollHeight;
+}
+function micNotice(t){ const n=$("#micNotice"); n.textContent=t; n.hidden=!t; }
+if(!SR){ micNotice("Live captions need Google Chrome on Android or desktop (or Safari on iPhone). Please open COMMUNICATE AI in a supported browser."); }
+$("#micBtn").onclick=()=>{
+  if(!SR) return toast("Live captions are not supported on this browser");
+  if(listening){ listening=false; try{rec.stop();}catch(e){} return; }
+  rec=new SR(); rec.lang=LANG[S.lang].code; rec.continuous=true; rec.interimResults=true;
+  rec.onresult=e=>{ let interim=""; for(let i=e.resultIndex;i<e.results.length;i++){ const r=e.results[i];
+      if(r.isFinal) finalTxt += (finalTxt?" ":"") + r[0].transcript.trim(); else interim += r[0].transcript; } capRender(interim); };
+  rec.onerror=e=>{ if(e.error==="not-allowed"||e.error==="service-not-allowed"){ listening=false;
+      micNotice("Microphone access was blocked. Allow the microphone for this app in your browser settings, then try again."); } };
+  rec.onend=()=>{ if(listening){ try{rec.start();}catch(e){} } else { $("#micBtn").classList.remove("on"); $("#micBtn").setAttribute("aria-label","Start listening"); capRender(); } };
+  try{ rec.start(); listening=true; micNotice(""); $("#micBtn").classList.add("on"); $("#micBtn").setAttribute("aria-label","Stop listening"); capRender(); }
+  catch(e){ toast("Could not start the microphone"); }
+};
+$("#capClear").onclick=()=>{ finalTxt=""; capRender(); };
+
+/* ---------- navigation ---------- */
+function go(view){
+  $$(".view").forEach(v=>v.classList.toggle("active", v.id==="v-"+view));
+  $$("nav.tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.view===view));
+  if(view!=="listen" && listening){ listening=false; try{rec.stop();}catch(e){} }
+  try{ history.replaceState(null,"", view==="talk" ? location.pathname : "#"+view); }catch(e){}
+  window.scrollTo({top:0});
+}
+$$("nav.tabs button").forEach(b=>b.onclick=()=>go(b.dataset.view));
+const h=location.hash.slice(1); if(["type","listen","sos","about"].includes(h)) go(h);
+window.addEventListener("hashchange",()=>{ const v=location.hash.slice(1)||"talk"; if(["talk","type","listen","sos","about"].includes(v)) go(v); });
+
+/* ---------- settings ---------- */
+function applySettings(){
+  document.documentElement.style.setProperty("--tile", S.tile);
+  $("#rate").value=S.rate; $("#rateV").textContent = S.rate<0.85?"Slow":S.rate>1.1?"Fast":"Normal";
+  $("#tileSize").value=S.tile; $("#tileV").textContent = S.tile<1?"Small":S.tile>1.15?"Large":"Normal";
+  $("#langSel").value=S.lang; document.documentElement.lang = S.lang;
+}
+$("#openSettings").onclick=()=>{ loadVoices(); openSheet("#settings"); };
+$("#closeSettings").onclick=()=>closeSheet("#settings");
+$("#langSel").onchange=e=>{ S.lang=e.target.value; S.voice=""; store.set("lang",S.lang); store.set("voice",""); loadVoices(); applySettings(); renderBoard(); renderSos(); renderStrip(); };
+$("#voiceSel").onchange=e=>{ S.voice=e.target.value; store.set("voice",S.voice); speak(labelFor(CATS[0].items[0])); };
+$("#rate").oninput=e=>{ S.rate=+e.target.value; store.set("rate",S.rate); applySettings(); };
+$("#tileSize").oninput=e=>{ S.tile=+e.target.value; store.set("tile",S.tile); applySettings(); };
+$("#resetAll").onclick=()=>confirmBox("Reset all settings, saved phrases, history and the school logo?", ()=>{ store.clear(); location.reload(); });
+
+/* ---------- PWA install ---------- */
+let deferred=null;
+const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferred=e; $("#aboutInstall").hidden=false;
+  if(!standalone && !store.get("installLater",false)) setTimeout(()=>$("#installBar").classList.add("show"),3500); });
+async function doInstall(){ if(!deferred) return toast("Use your browser menu → Install app / Add to Home Screen");
+  $("#installBar").classList.remove("show"); deferred.prompt(); try{ await deferred.userChoice; }catch(e){} deferred=null; $("#aboutInstall").hidden=true; }
+$("#installNow").onclick=doInstall; $("#aboutInstall").onclick=doInstall;
+$("#installLater").onclick=()=>{ $("#installBar").classList.remove("show"); store.set("installLater",true); };
+window.addEventListener("appinstalled",()=>toast("COMMUNICATE AI installed — "+SCHOOL));
+/* ---------- service worker + "new version" prompt ---------- */
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load", async ()=>{
+    let reg, reloading=false;
+    try{ reg = await navigator.serviceWorker.register("sw.js"); }catch(e){ return; }
+
+    const offerUpdate = sw => {
+      $("#updBar").classList.add("show");
+      $("#updNow").onclick = ()=>{
+        $("#updBar").classList.remove("show");
+        reloading = true;
+        sw.postMessage({type:"SKIP_WAITING"});
+      };
+      $("#updLater").onclick = ()=>$("#updBar").classList.remove("show");
+    };
+
+    // a new worker was already waiting when the page opened
+    if(reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg.waiting);
+
+    reg.addEventListener("updatefound", ()=>{
+      const sw = reg.installing;
+      if(!sw) return;
+      sw.addEventListener("statechange", ()=>{
+        // only prompt on an UPDATE, never on the very first install
+        if(sw.state==="installed" && navigator.serviceWorker.controller) offerUpdate(sw);
+      });
+    });
+
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+      if(reloading){ reloading=false; location.reload(); }
+    });
+
+    // catch a deploy made while the app is open
+    setInterval(()=>{ reg.update().catch(()=>{}); }, 60*60*1000);
+  });
+}
+
+/* ---------- boot ---------- */
+$("#yr").textContent=new Date().getFullYear();
+applySettings(); renderChips(); renderBoard(); renderSos(); renderHist(); renderSugg(); renderLogo(); renderStrip();
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") $$(".overlay.open").forEach(o=>o.classList.remove("open")); });
+setTimeout(()=>{ $("#splash").classList.add("hide"); renderLogo(); }, 2200);
+})();
+</script>
+</body>
+</html>
