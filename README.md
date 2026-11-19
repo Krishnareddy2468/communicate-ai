@@ -51,6 +51,13 @@ and stored on the device (~20 KB each).
 Each custom phrase also records **which language it is in**, so a Telugu phrase is always spoken by
 a Telugu voice even when the app is set to English.
 
+### Design
+
+The interface uses the school crest's own colours — its blue, gold, green, red and sky — as the
+accent for each card category, so the app and the crest read as one identity. Typography is
+**Plus Jakarta Sans** with **Noto Sans Telugu** and **Noto Sans Devanagari**, all self-hosted in
+`fonts/` so the three scripts render correctly even with no internet.
+
 ---
 
 ## Running it
@@ -90,7 +97,7 @@ the correct caching headers.
 Open `sw.js` and increase `VERSION`:
 
 ```js
-const VERSION = "2.1.0";   // <- change this on EVERY deploy
+const VERSION = "2.2.0";   // <- change this on EVERY deploy
 ```
 
 Also bump `APP_VERSION` in `index.html` to the same number — **the deploy workflow fails the build
@@ -104,6 +111,7 @@ get a *"New version available — Update"* banner.
 
 ```
 index.html             the whole app (markup, styles and logic in one file)
+fonts/                 self-hosted typefaces (Latin, Telugu, Devanagari) - work offline
 icons/school-logo.png  the school crest shown inside the app
 sw.js                  offline service worker  ← bump VERSION before deploying
 manifest.webmanifest   install name, icons, shortcuts

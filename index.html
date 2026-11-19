@@ -12,21 +12,60 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#0B4AA2">
 <meta name="author" content="SRI PRATIBHA HIGH SCHOOL">
+<link rel="preload" href="fonts/jakarta.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
+/* ============================================================
+   Typeface — self-hosted so the app still works offline.
+   One family, three files: the browser fetches only the script
+   it actually needs to draw, chosen by unicode-range.
+   ============================================================ */
+@font-face{font-family:"CAI";font-style:normal;font-weight:200 800;font-display:swap;
+  src:url("fonts/jakarta.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,
+    U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"CAI";font-style:normal;font-weight:100 900;font-display:swap;
+  src:url("fonts/telugu.woff2") format("woff2");
+  unicode-range:U+0951-0952,U+0964-0965,U+0C00-0C7F,U+1CDA,U+1CF2,U+200C-200D,U+25CC}
+@font-face{font-family:"CAI";font-style:normal;font-weight:100 900;font-display:swap;
+  src:url("fonts/devanagari.woff2") format("woff2");
+  unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+25CC,U+A830-A839,U+A8E0-A8FF}
+
 :root{
-  --blue:#0B4AA2; --blue-d:#073273; --blue-l:#E8F0FC; --blue-m:#3D7BD9;
-  --white:#FFFFFF; --ink:#13233F; --muted:#5B6B86; --line:#D5E1F3;
-  --red:#C62828; --red-l:#FDECEC; --green:#1B7F4B;
-  --radius:16px; --tile:1;
+  /* brand blue — kept exactly, it matches the crest ring and theme-color */
+  --blue:#0B4AA2; --blue-d:#06306E; --blue-l:#EDF3FD; --blue-m:#3D7BD9;
+
+  /* drawn from the school crest itself */
+  --crest-blue:#1C5ADE; --crest-gold:#D8C430; --crest-green:#40A12C;
+  --crest-red:#CC241D;  --crest-sky:#5A98DF;
+
+  /* category accents */
+  --c-greet:#C98A00; --c-needs:#1C5ADE; --c-feel:#2F9E22;
+  --c-class:#5B4BD6; --c-mine:#C2185B;  --c-sos:#C62828;
+
+  --white:#FFFFFF; --ink:#132544; --ink-2:#2B3F63; --muted:#64789B;
+  --line:#E3EBF8; --line-2:#D2DFF4;
+  --red:#C62828; --red-l:#FEF0F0; --green:#1B7F4B;
+
+  --bg:#F4F8FE;
+  --radius:18px; --radius-lg:22px; --tile:1;
+  --acc:var(--c-needs);                      /* set per category by JS */
+
+  --sh-1:0 1px 2px rgba(10,40,95,.05), 0 2px 6px rgba(10,40,95,.05);
+  --sh-2:0 2px 4px rgba(10,40,95,.05), 0 10px 24px rgba(10,40,95,.08);
+  --sh-3:0 10px 34px rgba(7,40,100,.20);
+
+  --font:"CAI",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;
   --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
-body{font-family:"Segoe UI",Roboto,"Noto Sans","Noto Sans Telugu","Noto Sans Devanagari",system-ui,sans-serif;
-  background:var(--blue-l);color:var(--ink);display:flex;flex-direction:column;min-height:100vh}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);
+  display:flex;flex-direction:column;min-height:100vh;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  font-synthesis-weight:none}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 [hidden]{display:none!important}
@@ -55,24 +94,37 @@ button{cursor:pointer}
 .logo-slot.has{border-style:solid;border-color:#fff}
 
 /* ---------- Header ---------- */
-header.app{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-d) 100%);color:#fff;
-  padding:calc(14px + var(--safe-t)) 16px 16px;position:relative}
-.h-row{display:flex;align-items:center;gap:12px;max-width:1100px;margin:0 auto}
-header .logo-slot{width:58px;height:58px;border-color:rgba(255,255,255,.55);color:rgba(255,255,255,.85);background:rgba(255,255,255,.1)}
+header.app{background:
+    radial-gradient(120% 90% at 100% 0%, rgba(90,152,223,.40) 0%, rgba(90,152,223,0) 55%),
+    radial-gradient(90% 80% at 0% 100%, rgba(28,90,222,.38) 0%, rgba(28,90,222,0) 60%),
+    linear-gradient(150deg,#0C51B4 0%,var(--blue) 42%,#052AA1 100%);
+  background-color:var(--blue-d);
+  color:#fff;padding:calc(16px + var(--safe-t)) 16px 18px;position:relative;
+  border-radius:0 0 26px 26px;box-shadow:0 10px 30px rgba(6,38,100,.22)}
+.h-row{display:flex;align-items:center;gap:13px;max-width:1100px;margin:0 auto}
+header .logo-slot{width:56px;height:56px;border:0;background:#fff;padding:3px;
+  box-shadow:0 4px 14px rgba(3,20,60,.3)}
 .h-text{flex:1;min-width:0}
-.h-title{margin:0;font-size:clamp(22px,5.4vw,30px);font-weight:800;letter-spacing:.05em;line-height:1.1}
-.h-school{margin:3px 0 0;font-size:clamp(12px,3.4vw,15px);font-weight:700;letter-spacing:.12em}
-.h-tag{margin:4px 0 0;font-size:11px;letter-spacing:.1em;opacity:.85;font-weight:600}
-.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);
-  color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.h-title{margin:0;font-size:clamp(23px,5.6vw,31px);font-weight:800;letter-spacing:.005em;line-height:1.08}
+.h-school{margin:4px 0 0;font-size:clamp(11.5px,3.2vw,14px);font-weight:700;letter-spacing:.1em;color:#BCD5F8}
+.h-tag{margin:5px 0 0;font-size:10.5px;letter-spacing:.11em;font-weight:700;color:rgba(255,255,255,.62)}
+.icon-btn{width:46px;height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.14);
+  color:#fff;display:flex;align-items:center;justify-content:center;flex:none;transition:transform .08s,background .15s}
+.icon-btn:active{transform:scale(.94)}
 .icon-btn svg{width:22px;height:22px}
 
 /* ---------- Message bar ---------- */
-.msgbar{max-width:1100px;margin:12px auto 0;background:#fff;color:var(--ink);border-radius:14px;padding:10px 10px 10px 14px;
-  display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(7,50,115,.25)}
-.msgbar .msg{flex:1;min-height:28px;font-size:18px;font-weight:600;word-break:break-word}
-.msgbar .msg.empty{color:var(--muted);font-weight:500;font-size:15px}
-.mb-btn{border:0;border-radius:10px;height:48px;min-width:48px;padding:0 12px;display:flex;align-items:center;gap:6px;font-weight:700}
+/* The spoken message is the whole point of the app, so it gets the room.
+   Actions sit underneath instead of squeezing it onto two cramped lines. */
+.msgbar{max-width:1100px;margin:14px auto 0;background:#fff;color:var(--ink);border-radius:var(--radius);
+  padding:13px 13px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:9px;box-shadow:var(--sh-3)}
+.msgbar .msg{flex:1 1 100%;min-height:26px;font-size:20px;font-weight:700;line-height:1.32;
+  word-break:break-word;letter-spacing:.005em}
+.msgbar .msg.empty{flex:1 1 auto;min-width:0;color:#93A5C2;font-weight:600;font-size:15px;letter-spacing:0}
+.mb-acts{display:flex;gap:8px;flex:0 0 auto;margin-left:auto;justify-content:flex-end}
+.mb-btn{border:0;border-radius:13px;height:48px;min-width:48px;padding:0 14px;display:flex;align-items:center;
+  justify-content:center;gap:7px;font-weight:700;font-size:15px;transition:transform .08s,filter .15s}
+.mb-btn:active{transform:scale(.96)}
 .mb-btn svg{width:20px;height:20px}
 .mb-speak{background:var(--blue);color:#fff}
 .mb-ghost{background:var(--blue-l);color:var(--blue)}
@@ -137,32 +189,50 @@ p.v-sub{margin:0 0 14px;color:var(--muted);font-size:14px}
 
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:12px 16px;font-weight:600;font-size:14px;color:var(--blue-d)}
-.chip[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip{flex:none;min-height:46px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:11px 16px;
+  font-weight:700;font-size:14px;color:var(--ink-2);box-shadow:var(--sh-1);letter-spacing:.005em;
+  display:flex;align-items:center;gap:7px;transition:transform .08s,background .15s,color .15s,border-color .15s}
+.chip .ce{font-size:16px;line-height:1}
+.chip:active{transform:scale(.96)}
+.chip[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff;box-shadow:var(--sh-2)}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(140px * var(--tile)),1fr));gap:12px}
-.tile{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 10px 12px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;
-  min-height:calc(128px * var(--tile));box-shadow:0 2px 0 var(--line);transition:transform .08s, box-shadow .08s, border-color .15s}
-.tile:active{transform:translateY(2px);box-shadow:none}
-.tile.speaking{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,74,162,.25)}
-.tile .em{font-size:calc(38px * var(--tile));line-height:1}
-.tile .en{font-weight:700;font-size:calc(15px * var(--tile));color:var(--ink);line-height:1.2}
-.tile .loc{font-size:calc(13px * var(--tile));color:var(--blue);font-weight:600;line-height:1.25}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(146px * var(--tile)),1fr));gap:13px}
+
+/* A card: colour-coded halo around the symbol, label beneath.
+   The halo is what stops the emoji reading as a stray glyph. */
+.tile{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:16px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;text-align:center;min-height:calc(142px * var(--tile));box-shadow:var(--sh-1);
+  transition:transform .11s cubic-bezier(.2,.8,.3,1), box-shadow .18s, border-color .18s}
+.tile:active{transform:scale(.965)}
+@media (hover:hover){ .tile:hover{box-shadow:var(--sh-2);border-color:var(--line-2);transform:translateY(-2px)} }
+.tile.speaking{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent),var(--sh-2)}
+.tile.speaking .em{transform:scale(1.07)}
+
+.tile .em{flex:none;width:calc(62px * var(--tile));height:calc(62px * var(--tile));border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:calc(33px * var(--tile));line-height:1;
+  background:color-mix(in srgb,var(--acc) 13%,#fff);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 20%,transparent);
+  transition:transform .18s cubic-bezier(.2,.8,.3,1)}
+.tile .en{font-weight:700;font-size:calc(15px * var(--tile));color:var(--ink);line-height:1.32;letter-spacing:.005em}
+.tile .loc{font-size:calc(13.5px * var(--tile));color:var(--acc);font-weight:600;line-height:1.35}
 .tile .del{position:absolute;top:5px;right:5px;width:34px;height:34px;border-radius:50%;border:0;background:var(--blue-l);color:var(--muted);font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center}
-.tile.add{border-style:dashed;color:var(--blue);background:transparent;box-shadow:none}
-/* photo cards */
-.tile .em.pic{width:calc(62px * var(--tile));height:calc(62px * var(--tile));border-radius:12px;overflow:hidden;
-  background:var(--blue-l);display:flex;align-items:center;justify-content:center}
+.tile.add{border:2px dashed var(--line-2);color:var(--acc);background:#fff;box-shadow:none}
+.tile.add .em{background:color-mix(in srgb,var(--acc) 10%,#fff);color:var(--acc);font-weight:700}
+.tile.add .en{color:var(--acc)}
+.tile.add small{display:block;font-weight:600;font-size:12px;color:var(--muted);margin-top:2px}
+/* photo cards: a real photograph, so no tint over it */
+.tile .em.pic{border-radius:18px;overflow:hidden;background:var(--blue-l);box-shadow:var(--sh-1);padding:0}
 .tile .em.pic img{width:100%;height:100%;object-fit:cover;display:block}
 .tile .badge{position:absolute;top:6px;left:6px;background:var(--blue-l);color:var(--blue);border-radius:999px;
   font-size:10px;font-weight:800;letter-spacing:.06em;padding:3px 7px;line-height:1}
 
-.sos .tile{background:var(--red-l);border-color:#F3C1C1;box-shadow:0 2px 0 #F3C1C1}
-.sos .tile .loc{color:var(--red)}
-.sos .tile.speaking{border-color:var(--red);box-shadow:0 0 0 3px rgba(198,40,40,.25)}
-.sos-banner{background:var(--red);color:#fff;border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:center}
-.sos-banner b{font-size:17px}
+.sos{--acc:var(--c-sos)}
+.sos .tile{background:linear-gradient(180deg,#FFF 0%,var(--red-l) 100%);border-color:#F6CFCF}
+.sos .tile .en{color:#8E1B1B}
+.sos-banner{background:linear-gradient(135deg,#D32F2F 0%,#A51B1B 100%);color:#fff;border-radius:var(--radius-lg);
+  padding:16px 18px;margin-bottom:16px;display:flex;gap:13px;align-items:center;box-shadow:0 8px 24px rgba(165,27,27,.28)}
+.sos-banner b{font-size:18px;letter-spacing:-.01em}
 
 .card{background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
 textarea.big{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:18px;resize:vertical;outline:none}
@@ -220,18 +290,23 @@ input[type=range]{width:100%;accent-color:var(--blue)}
 .meta dt{color:var(--muted)}.meta dd{margin:0;font-weight:600}
 
 /* ---------- Footer & nav ---------- */
-footer.app{text-align:center;padding:14px 16px 10px;color:var(--muted);font-size:12px;line-height:1.5}
-footer.app .fs{font-weight:800;color:var(--blue-d);letter-spacing:.1em;font-size:13px}
-footer .flogo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px}
-footer .logo-slot{width:28px;height:28px;font-size:0}
-nav.tabs{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;
-  padding:6px 4px calc(6px + var(--safe-b));z-index:20;box-shadow:0 -4px 16px rgba(7,50,115,.06)}
-nav.tabs button{flex:1;max-width:120px;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:6px 2px;border-radius:12px;color:var(--muted);font-size:12px;font-weight:700}
-nav.tabs svg{width:24px;height:24px}
+footer.app{text-align:center;padding:22px 16px 26px;color:var(--muted);font-size:12px;line-height:1.6;
+  border-top:1px solid var(--line);margin-top:10px;background:#fff}
+footer.app .fs{font-weight:800;color:var(--blue-d);letter-spacing:.09em;font-size:13px}
+footer .flogo{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:6px}
+footer .logo-slot{width:30px;height:30px;font-size:0;border:0;box-shadow:none}
+nav.tabs{position:sticky;bottom:0;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);display:flex;justify-content:space-around;
+  padding:7px 6px calc(7px + var(--safe-b));z-index:20;box-shadow:0 -6px 22px rgba(7,50,115,.07)}
+nav.tabs button{flex:1;max-width:124px;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:7px 2px;border-radius:14px;color:#8094B5;font-size:11.5px;font-weight:700;letter-spacing:-.005em;
+  transition:color .15s,background .15s,transform .08s}
+nav.tabs button:active{transform:scale(.94)}
+nav.tabs svg{width:23px;height:23px;transition:transform .18s cubic-bezier(.2,.8,.3,1)}
 nav.tabs button[aria-selected="true"]{color:var(--blue);background:var(--blue-l)}
+nav.tabs button[aria-selected="true"] svg{transform:translateY(-1px) scale(1.06)}
 nav.tabs button.sosn[aria-selected="true"]{color:var(--red);background:var(--red-l)}
-nav.tabs button.sosn{color:var(--red)}
+nav.tabs button.sosn{color:#D05B5B}
 
 /* ---------- Overlays ---------- */
 .overlay{position:fixed;inset:0;z-index:60;display:none}
@@ -294,16 +369,18 @@ nav.tabs button.sosn{color:var(--red)}
   </div>
   <div class="msgbar">
     <div class="msg empty" id="lastMsg" aria-live="polite">Tap a card to speak.</div>
-    <button class="mb-btn mb-build" id="buildBtn" aria-pressed="false" aria-label="Sentence builder" title="Sentence builder — join cards into a sentence">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h7M4 12h10M4 17h5"/><path d="M17 14l3 3-3 3"/><path d="M20 17h-6"/></svg>
-    </button>
-    <button class="mb-btn mb-ghost" id="showBtn" aria-label="Show text in large letters" title="Show in large letters">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-    </button>
-    <button class="mb-btn mb-speak" id="repeatBtn" aria-label="Speak again">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-      <span>Speak</span>
-    </button>
+    <div class="mb-acts">
+      <button class="mb-btn mb-build" id="buildBtn" aria-pressed="false" aria-label="Sentence builder" title="Sentence builder — join cards into a sentence">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h7M4 12h10M4 17h5"/><path d="M17 14l3 3-3 3"/><path d="M20 17h-6"/></svg>
+      </button>
+      <button class="mb-btn mb-ghost" id="showBtn" aria-label="Show text in large letters" title="Show in large letters">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+      </button>
+      <button class="mb-btn mb-speak" id="repeatBtn" aria-label="Speak again">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        <span>Speak</span>
+      </button>
+    </div>
   </div>
 
   <!-- Sentence builder strip -->
@@ -412,7 +489,7 @@ nav.tabs button.sosn{color:var(--red)}
         <dt>Application</dt><dd>COMMUNICATE AI</dd>
         <dt>Institution</dt><dd>SRI PRATIBHA HIGH SCHOOL</dd>
         <dt>Category</dt><dd>Assistive Technology</dd>
-        <dt>Version</dt><dd id="appVer">2.1.1</dd>
+        <dt>Version</dt><dd id="appVer">2.2.0</dd>
         <dt>Privacy</dt><dd>All data stays on this device.</dd>
       </dl>
     </div>
@@ -572,7 +649,7 @@ nav.tabs button.sosn{color:var(--red)}
 "use strict";
 const SCHOOL = "SRI PRATIBHA HIGH SCHOOL";
 /* keep in step with VERSION in sw.js — the deploy workflow checks they match */
-const APP_VERSION = "2.1.1";
+const APP_VERSION = "2.2.0";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 
 /* ---------- storage (safe) ---------- */
@@ -584,7 +661,7 @@ const store = {
 
 /* ---------- phrase data ---------- */
 const CATS = [
-  {id:"greet", name:"Greetings", em:"👋", items:[
+  {id:"greet", name:"Greetings", em:"👋", acc:"var(--c-greet)", items:[
     ["👋","Hello","नमस्ते","నమస్కారం"],
     ["☀️","Good morning","सुप्रभात","శుభోదయం"],
     ["🙏","Thank you","धन्यवाद","ధన్యవాదాలు"],
@@ -593,16 +670,16 @@ const CATS = [
     ["✅","Yes","हाँ","అవును"],
     ["❌","No","नहीं","కాదు"],
     ["🚶","Goodbye","अलविदा","వెళ్ళొస్తాను"]]},
-  {id:"needs", name:"My Needs", em:"🙋", items:[
+  {id:"needs", name:"My Needs", em:"🙋", acc:"var(--c-needs)", items:[
     ["💧","I want water","मुझे पानी चाहिए","నాకు నీళ్ళు కావాలి"],
-    ["🚻","I need to use the toilet","मुझे शौचालय जाना है","నేను బాత్‌రూమ్‌కి వెళ్ళాలి"],
-    ["🍱","I am hungry","मुझे भूख लगी है","నాకు ఆకలిగా ఉంది"],
+    ["🚽","I need to use the toilet","मुझे शौचालय जाना है","నేను బాత్‌రూమ్‌కి వెళ్ళాలి"],
+    ["🍛","I am hungry","मुझे भूख लगी है","నాకు ఆకలిగా ఉంది"],
     ["🙋","I need help","मुझे मदद चाहिए","నాకు సహాయం కావాలి"],
     ["🛌","I want to rest","मुझे आराम करना है","నేను విశ్రాంతి తీసుకోవాలి"],
     ["✋","Please wait","कृपया रुकिए","దయచేసి ఆగండి"],
     ["🏠","I want to go home","मुझे घर जाना है","నేను ఇంటికి వెళ్ళాలి"],
-    ["🔁","Please repeat","कृपया दोबारा बोलिए","దయచేసి మళ్ళీ చెప్పండి"]]},
-  {id:"feel", name:"Feelings", em:"😊", items:[
+    ["👂","Please repeat","कृपया दोबारा बोलिए","దయచేసి మళ్ళీ చెప్పండి"]]},
+  {id:"feel", name:"Feelings", em:"😊", acc:"var(--c-feel)", items:[
     ["😊","I am happy","मैं खुश हूँ","నేను సంతోషంగా ఉన్నాను"],
     ["😢","I am sad","मैं उदास हूँ","నేను బాధగా ఉన్నాను"],
     ["😴","I am tired","मुझे थकान हो रही है","నాకు అలసటగా ఉంది"],
@@ -611,7 +688,7 @@ const CATS = [
     ["😠","I am angry","मुझे गुस्सा आ रहा है","నాకు కోపంగా ఉంది"],
     ["👍","I am okay","मैं ठीक हूँ","నేను బాగున్నాను"],
     ["🤕","I have pain","मुझे दर्द हो रहा है","నాకు నొప్పిగా ఉంది"]]},
-  {id:"class", name:"Classroom", em:"🏫", items:[
+  {id:"class", name:"Classroom", em:"🏫", acc:"var(--c-class)", items:[
     ["✋","I have a question","मेरा एक सवाल है","నాకు ఒక సందేహం ఉంది"],
     ["🤔","I don't understand","मुझे समझ नहीं आया","నాకు అర్థం కాలేదు"],
     ["💡","I understand","मुझे समझ आ गया","నాకు అర్థమైంది"],
@@ -620,14 +697,14 @@ const CATS = [
     ["📗","I finished my work","मेरा काम हो गया","నా పని పూర్తయింది"],
     ["📝","Please write it on the board","कृपया बोर्ड पर लिखिए","దయచేసి బోర్డు మీద రాయండి"],
     ["🚪","May I come in?","क्या मैं अंदर आऊँ?","లోపలికి రావచ్చా?"]]},
-  {id:"mine", name:"My Phrases", em:"⭐", items:[]}
+  {id:"mine", name:"My Phrases", em:"⭐", acc:"var(--c-mine)", items:[]}
 ];
 const SOS = [
   ["🆘","Help me!","मेरी मदद कीजिए!","నాకు సహాయం చేయండి!"],
   ["👩‍🏫","Please call my teacher","मेरे शिक्षक को बुलाइए","దయచేసి మా టీచర్‌ని పిలవండి"],
   ["📞","Please call my parents","मेरे माता-पिता को बुलाइए","దయచేసి మా అమ్మానాన్నలను పిలవండి"],
   ["🩹","I am hurt","मुझे चोट लगी है","నాకు దెబ్బ తగిలింది"],
-  ["😮‍💨","I cannot breathe well","मुझे साँस लेने में तकलीफ़ है","నాకు ఊపిరి తీసుకోవడం కష్టంగా ఉంది"],
+  ["😰","I cannot breathe well","मुझे साँस लेने में तकलीफ़ है","నాకు ఊపిరి తీసుకోవడం కష్టంగా ఉంది"],
   ["💫","I feel dizzy","मुझे चक्कर आ रहा है","నాకు కళ్ళు తిరుగుతున్నాయి"]
 ];
 const LANG = { en:{idx:1, code:"en-IN", alt:["en-IN","en-GB","en-US","en"]},
@@ -925,15 +1002,23 @@ function tileEl(it, {sos=false, del=null}={}){
 }
 function renderChips(){
   const c=$("#catChips"); c.innerHTML="";
-  CATS.forEach(cat=>{ const b=document.createElement("button"); b.className="chip"; b.textContent=cat.em+"  "+cat.name;
-    b.setAttribute("aria-pressed", cat.id===S.cat); b.onclick=()=>{ S.cat=cat.id; store.set("cat",S.cat); renderChips(); renderBoard(); }; c.appendChild(b); });
+  CATS.forEach(cat=>{
+    const b=document.createElement("button"); b.className="chip";
+    b.style.setProperty("--acc", cat.acc);
+    const e=document.createElement("span"); e.className="ce"; e.textContent=cat.em; e.setAttribute("aria-hidden","true");
+    const t=document.createElement("span"); t.textContent=cat.name;
+    b.append(e,t);
+    b.setAttribute("aria-pressed", cat.id===S.cat);
+    b.onclick=()=>{ S.cat=cat.id; store.set("cat",S.cat); renderChips(); renderBoard(); };
+    c.appendChild(b); });
 }
 function renderBoard(){
   const g=$("#board"); g.innerHTML=""; const cat=CATS.find(c=>c.id===S.cat)||CATS[1];
+  g.style.setProperty("--acc", cat.acc);
   cat.items.forEach((it,i)=>g.appendChild(tileEl(it, cat.id==="mine" ? {del:()=>{ S.mine.splice(i,1); store.set("mine",S.mine); renderBoard(); toast("Phrase removed"); }} : {})));
   if(cat.id==="mine"){
     const a=document.createElement("button"); a.className="tile add";
-    a.innerHTML='<span class="em">＋</span><span class="en" style="color:var(--blue)">Add phrase<br><small style="font-weight:600">emoji or photo</small></span>';
+    a.innerHTML='<span class="em" aria-hidden="true">＋</span><span class="en">Add phrase<small>emoji or photo</small></span>';
     a.onclick=openAddSheet; g.appendChild(a);
   }
 }

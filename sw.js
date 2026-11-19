@@ -11,13 +11,16 @@
    IMPORTANT: bump VERSION on every deploy.
    =================================================================== */
 
-const VERSION = "2.1.1";
+const VERSION = "2.2.0";
 const CACHE   = "communicate-ai-sph-v" + VERSION;
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
+  "./fonts/jakarta.woff2",
+  "./fonts/telugu.woff2",
+  "./fonts/devanagari.woff2",
   "./icons/school-logo.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
