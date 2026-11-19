@@ -33,6 +33,14 @@ Tap the **green builder button** in the message bar. Now every card you tap is b
 added to a sentence strip, so a student can compose a full sentence — *"I want water" + "Please"* —
 and speak it as one message. Tap any word to remove it, or save the whole sentence to My Phrases.
 
+### Device check
+
+**Settings → 🩺 Check this device.** Before demonstrating, open this on the phone you will
+actually use. It reports in plain language whether that device can speak, has Telugu and Hindi
+voices installed, can use the microphone, has saved itself for offline use, and whether it has been
+installed to the home screen — with the fix written next to anything that is not ready. There is
+also a **Test the voice** button that speaks a sentence in the current language.
+
 ### Photo cards
 
 A custom phrase can carry a **real photograph** taken with the camera — your own teacher, your own
@@ -82,8 +90,11 @@ the correct caching headers.
 Open `sw.js` and increase `VERSION`:
 
 ```js
-const VERSION = "2.0.0";   // <- change this on EVERY deploy
+const VERSION = "2.1.0";   // <- change this on EVERY deploy
 ```
+
+Also bump `APP_VERSION` in `index.html` to the same number — **the deploy workflow fails the build
+if the two do not match**, so this is hard to get wrong.
 
 The service worker caches the app so it works offline. If you do not change this number, phones
 that already installed the app may keep showing the **old** version. When you do change it, users
@@ -93,6 +104,7 @@ get a *"New version available — Update"* banner.
 
 ```
 index.html             the whole app (markup, styles and logic in one file)
+icons/school-logo.png  the school crest shown inside the app
 sw.js                  offline service worker  ← bump VERSION before deploying
 manifest.webmanifest   install name, icons, shortcuts
 vercel.json            caching headers for Vercel
@@ -102,12 +114,24 @@ icons/                 app icons and install screenshot
 
 ## School logo
 
-In the app: **Settings (⚙) → Upload logo**. It appears on the splash screen, header, About page,
-footer and install banner on that device.
+**The official SRI PRATIBHA HIGH SCHOOL crest ships with the app.** It appears on the splash
+screen, header, About page, footer, install banner and update banner from the very first launch,
+with nothing to set up, and it is also the installed app icon and the browser favicon.
 
-To make the logo the *installed app icon* for everyone, replace the PNGs in `icons/`
-(`icon-192.png`, `icon-512.png`, `maskable-512.png`, `apple-touch-icon.png`) at the same sizes and
-redeploy.
+A device may override it with its own image via **Settings (⚙) → Upload logo**; **Use school crest**
+puts the official one back.
+
+The icon set is generated from `icons/school-logo.png`. To regenerate it after changing the crest:
+
+```bash
+magick icons/school-logo.png -background none -gravity center -extent 512x512 /tmp/sq.png
+gen(){ magick /tmp/sq.png -resize ${2}x${2} -background white -gravity center \
+       -extent ${1}x${1} -alpha remove -alpha off -colors 256 -strip "$3"; }
+gen 192 184 icons/icon-192.png
+gen 512 491 icons/icon-512.png
+gen 180 166 icons/apple-touch-icon.png
+gen 512 317 icons/maskable-512.png     # smaller: launchers crop maskable icons
+```
 
 ## Installing on a phone
 

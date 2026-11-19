@@ -99,6 +99,21 @@ header .logo-slot{width:58px;height:58px;border-color:rgba(255,255,255,.55);colo
 .strip .sa .s-ghost{background:rgba(255,255,255,.2);color:#fff}
 .strip .sa svg{width:17px;height:17px}
 
+/* ---------- Device check ---------- */
+.diag{margin:4px 0 2px}
+.diag .d-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.diag .d-row:last-child{border-bottom:0}
+.d-dot{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#fff;margin-top:1px}
+.d-ok{background:var(--green)} .d-warn{background:#B26A00} .d-bad{background:var(--red)} .d-wait{background:var(--muted)}
+.diag .d-t{flex:1;min-width:0}
+.diag .d-t b{display:block;font-size:14px;color:var(--ink)}
+.diag .d-t span{display:block;font-size:12.5px;color:var(--muted);line-height:1.4;margin-top:2px}
+.diag-sum{border-radius:12px;padding:10px 12px;font-weight:700;font-size:14px;margin-bottom:6px}
+.diag-sum.good{background:#E8F6EE;color:var(--green)}
+.diag-sum.warn{background:#FFF4E2;color:#B26A00}
+.diag-sum.bad{background:var(--red-l);color:var(--red)}
+
 /* ---------- Update banner ---------- */
 .updbar{position:fixed;left:12px;right:12px;bottom:calc(74px + var(--safe-b));z-index:70;background:var(--blue-d);color:#fff;
   border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(7,50,115,.45)}
@@ -397,7 +412,7 @@ nav.tabs button.sosn{color:var(--red)}
         <dt>Application</dt><dd>COMMUNICATE AI</dd>
         <dt>Institution</dt><dd>SRI PRATIBHA HIGH SCHOOL</dd>
         <dt>Category</dt><dd>Assistive Technology</dd>
-        <dt>Version</dt><dd id="appVer">2.0.0</dd>
+        <dt>Version</dt><dd id="appVer">2.1.0</dd>
         <dt>Privacy</dt><dd>All data stays on this device.</dd>
       </dl>
     </div>
@@ -442,8 +457,8 @@ nav.tabs button.sosn{color:var(--red)}
       <div class="logo-slot" data-logo>SCHOOL<br>LOGO</div>
       <div>
         <button class="btn primary" id="logoPick">Upload logo</button>
-        <button class="btn ghost" id="logoRemove" hidden>Remove</button>
-        <div style="font-size:12px;color:var(--muted);margin-top:6px">PNG or JPG, square works best. Shown on splash, header, About and footer.</div>
+        <button class="btn ghost" id="logoRemove" hidden>Use school crest</button>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">The official SRI PRATIBHA HIGH SCHOOL crest is already built in. Upload only to override it on this device.</div>
       </div>
       <input type="file" id="logoFile" accept="image/*" class="sr">
     </div>
@@ -464,6 +479,10 @@ nav.tabs button.sosn{color:var(--red)}
 
     <label class="fl" for="tileSize">Card size: <span id="tileV"></span></label>
     <input type="range" id="tileSize" min="0.9" max="1.4" step="0.1">
+
+    <label class="fl">Before a demonstration</label>
+    <button class="btn ghost" id="openDiag" style="width:100%">🩺 Check this device</button>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Checks speech, voices, microphone and offline support on this phone.</div>
 
     <div class="row" style="justify-content:space-between">
       <button class="btn danger" id="resetAll">Reset app data</button>
@@ -507,6 +526,19 @@ nav.tabs button.sosn{color:var(--red)}
   </div>
 </div>
 
+<div class="overlay sheet-bg" id="diagSheet" role="dialog" aria-modal="true" aria-labelledby="diagTitle">
+  <div class="sheet">
+    <h3 id="diagTitle">Device check</h3>
+    <div style="color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.06em">COMMUNICATE AI · SRI PRATIBHA HIGH SCHOOL</div>
+    <div class="diag-sum" id="diagSum">Checking…</div>
+    <div class="diag" id="diagList" aria-live="polite"></div>
+    <div class="row" style="justify-content:space-between">
+      <button class="btn ghost" id="diagSpeak">🔊 Test the voice</button>
+      <button class="btn primary" id="diagClose">Done</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay sheet-bg" id="confirmSheet" role="dialog" aria-modal="true">
   <div class="sheet">
     <h3 id="confirmText">Are you sure?</h3>
@@ -540,7 +572,7 @@ nav.tabs button.sosn{color:var(--red)}
 "use strict";
 const SCHOOL = "SRI PRATIBHA HIGH SCHOOL";
 /* keep in step with VERSION in sw.js — the deploy workflow checks they match */
-const APP_VERSION = "2.0.0";
+const APP_VERSION = "2.1.0";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 
 /* ---------- storage (safe) ---------- */
@@ -628,13 +660,23 @@ function closeSheet(s){ $(s).classList.remove("open"); }
 $$(".sheet-bg").forEach(o=>o.addEventListener("click",e=>{ if(e.target===o) o.classList.remove("open"); }));
 
 /* ---------- logo ---------- */
+/* The school crest ships WITH the app, so it is on screen from the very first
+   launch with nothing to set up. A device may still upload its own image,
+   and "Use school crest" puts the official one back. */
+const DEFAULT_LOGO = "icons/school-logo.png";
 function renderLogo(){
+  const src = S.logo || DEFAULT_LOGO;
   $$("[data-logo]").forEach(el=>{
-    if(S.logo){ el.innerHTML=""; const i=new Image(); i.src=S.logo; i.alt=SCHOOL+" logo"; el.appendChild(i); el.classList.add("has"); }
-    else { el.classList.remove("has"); el.innerHTML = (el.closest("footer")||el.closest(".install")||el.closest(".updbar")) ? "" : "SCHOOL<br>LOGO"; }
+    el.innerHTML="";
+    const i=new Image();
+    i.src=src; i.alt=SCHOOL+" logo"; i.decoding="async";
+    i.onerror=()=>{ el.classList.remove("has");
+      el.innerHTML = (el.closest("footer")||el.closest(".install")||el.closest(".updbar")) ? "" : "SCHOOL<br>LOGO"; };
+    el.appendChild(i); el.classList.add("has");
   });
-  $("#logoRemove").hidden = !S.logo;
-  const l = document.querySelector('link[rel="icon"]'); if(S.logo && l){ l.href=S.logo; }
+  $("#logoRemove").hidden = !S.logo;          // only offer a reset if one was uploaded
+  const l=document.querySelector('link[rel="icon"]');
+  if(l) l.href = S.logo || "icons/icon-192.png";
 }
 $("#logoPick").onclick=()=>$("#logoFile").click();
 $("#logoFile").onchange=e=>{
@@ -651,7 +693,7 @@ $("#logoFile").onchange=e=>{
     img.src=r.result; };
   r.readAsDataURL(f); e.target.value="";
 };
-$("#logoRemove").onclick=()=>{ S.logo=null; store.set("logo",null); renderLogo(); toast("Logo removed"); };
+$("#logoRemove").onclick=()=>{ S.logo=null; store.set("logo",null); renderLogo(); toast("Showing the official school crest"); };
 
 /* ---------- speech ---------- */
 const synth = window.speechSynthesis;
@@ -1009,6 +1051,83 @@ $("#voiceSel").onchange=e=>{ S.voice=e.target.value; store.set("voice",S.voice);
 $("#rate").oninput=e=>{ S.rate=+e.target.value; store.set("rate",S.rate); applySettings(); };
 $("#tileSize").oninput=e=>{ S.tile=+e.target.value; store.set("tile",S.tile); applySettings(); };
 $("#resetAll").onclick=()=>confirmBox("Reset all settings, saved phrases, history and the school logo?", ()=>{ store.clear(); location.reload(); });
+
+/* ---------- device check ----------
+   Run this on the phone you will demonstrate with. It reports, in plain
+   words, whether THIS device can speak, listen and work offline.          */
+function diagRows(){
+  const R=[];
+  const add=(s,title,msg)=>R.push({s,title,msg});
+  const L=n=>voices.filter(v=>v.lang.replace("_","-").toLowerCase().startsWith(n));
+
+  // speech out
+  if(!synth) add("bad","Speaking","This browser cannot speak. Use Chrome on Android, or Safari on iPhone.");
+  else if(!voices.length) add("warn","Speaking","No voices found yet. Close and reopen the app; if it stays empty, install a text-to-speech voice in your phone settings.");
+  else add("ok","Speaking", voices.length+" voices available on this device.");
+
+  // per language
+  [["en","English"],["te","తెలుగు Telugu"],["hi","हिन्दी Hindi"]].forEach(([code,name])=>{
+    const has=L(code).length;
+    if(has) add("ok", name+" voice", L(code)[0].name+" ("+L(code)[0].lang+")");
+    else add(code==="en"?"bad":"warn", name+" voice",
+      code==="en" ? "No English voice on this device."
+      : "Not installed. Android: Settings → Text-to-speech → Google Speech Services → Install voice data → "+name.split(" ").pop()+". The app will use another voice until then.");
+  });
+
+  // listening
+  const SRok = !!(window.SpeechRecognition||window.webkitSpeechRecognition);
+  add(SRok?"ok":"bad","Live captions (microphone)",
+    SRok ? "Supported. Tap the microphone on the Listen screen and allow access."
+         : "This browser cannot do live captions. Use Chrome on Android or Safari on iPhone.");
+
+  // offline
+  const secure = location.protocol==="https:" || location.hostname==="localhost" || location.hostname==="127.0.0.1";
+  if(!("serviceWorker" in navigator)) add("bad","Works offline","This browser cannot store the app for offline use.");
+  else if(!secure) add("warn","Works offline","Open the app over an https:// link. Offline, install and the microphone do not work over a plain http:// address.");
+  else if(navigator.serviceWorker.controller) add("ok","Works offline","Saved on this device. Try switching on airplane mode.");
+  else add("warn","Works offline","Not saved yet. Reload the page once while online.");
+
+  // storage
+  let st=false; try{ localStorage.setItem("cai:__t","1"); localStorage.removeItem("cai:__t"); st=true; }catch(e){}
+  add(st?"ok":"warn","Saving on this device",
+    st?"Phrases, photos and settings will be remembered.":"Private/incognito mode — nothing will be remembered.");
+
+  // installed
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  add(standalone?"ok":"warn","Installed to home screen",
+    standalone?"Running as an installed app.":"Running in the browser. Android: menu ⋮ → Install app. iPhone: Share → Add to Home Screen.");
+
+  return R;
+}
+function renderDiag(){
+  const rows=diagRows(), list=$("#diagList"); list.innerHTML="";
+  rows.forEach(r=>{
+    const d=document.createElement("div"); d.className="d-row";
+    const dot=document.createElement("span");
+    dot.className="d-dot "+(r.s==="ok"?"d-ok":r.s==="warn"?"d-warn":"d-bad");
+    dot.textContent = r.s==="ok"?"✓":r.s==="warn"?"!":"✕";
+    dot.setAttribute("aria-label", r.s==="ok"?"Working":r.s==="warn"?"Needs attention":"Not working");
+    const t=document.createElement("div"); t.className="d-t";
+    const b=document.createElement("b"); b.textContent=r.title;
+    const sp=document.createElement("span"); sp.textContent=r.msg;
+    t.append(b,sp); d.append(dot,t); list.appendChild(d);
+  });
+  const bad=rows.filter(r=>r.s==="bad").length, warn=rows.filter(r=>r.s==="warn").length;
+  const sum=$("#diagSum");
+  sum.className="diag-sum "+(bad?"bad":warn?"warn":"good");
+  sum.textContent = bad ? bad+" problem"+(bad>1?"s":"")+" to fix before demonstrating"
+                  : warn ? "Ready, with "+warn+" thing"+(warn>1?"s":"")+" to check"
+                  : "This device is ready ✓";
+}
+$("#openDiag").onclick=()=>{ loadVoices(); renderDiag(); openSheet("#diagSheet");
+  setTimeout(renderDiag,700); };   // voices often arrive a moment late
+$("#diagClose").onclick=()=>closeSheet("#diagSheet");
+$("#diagSpeak").onclick=()=>{
+  const t = S.lang==="te" ? "ఇది పరీక్ష. నా మాట వినిపిస్తోందా?"
+          : S.lang==="hi" ? "यह एक परीक्षण है। क्या आप मुझे सुन सकते हैं?"
+          : "This is a test. Can you hear me?";
+  speak(t,{history:false});
+};
 
 /* ---------- PWA install ---------- */
 let deferred=null;
