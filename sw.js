@@ -11,7 +11,7 @@
    IMPORTANT: bump VERSION on every deploy.
    =================================================================== */
 
-const VERSION = "2.1.0";
+const VERSION = "2.1.1";
 const CACHE   = "communicate-ai-sph-v" + VERSION;
 
 const ASSETS = [

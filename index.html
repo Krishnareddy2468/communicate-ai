@@ -72,7 +72,7 @@ header .logo-slot{width:58px;height:58px;border-color:rgba(255,255,255,.55);colo
   display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(7,50,115,.25)}
 .msgbar .msg{flex:1;min-height:28px;font-size:18px;font-weight:600;word-break:break-word}
 .msgbar .msg.empty{color:var(--muted);font-weight:500;font-size:15px}
-.mb-btn{border:0;border-radius:10px;height:42px;min-width:42px;padding:0 12px;display:flex;align-items:center;gap:6px;font-weight:700}
+.mb-btn{border:0;border-radius:10px;height:48px;min-width:48px;padding:0 12px;display:flex;align-items:center;gap:6px;font-weight:700}
 .mb-btn svg{width:20px;height:20px}
 .mb-speak{background:var(--blue);color:#fff}
 .mb-ghost{background:var(--blue-l);color:var(--blue)}
@@ -86,14 +86,14 @@ header .logo-slot{width:58px;height:58px;border-color:rgba(255,255,255,.55);colo
 .strip .sw{flex:1 1 100%;display:flex;gap:6px;flex-wrap:wrap;min-height:44px;align-items:center}
 .strip .ph{color:rgba(255,255,255,.8);font-size:14px;font-weight:600;padding:0 4px}
 .word{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--ink);border:0;
-  border-radius:999px;padding:6px 10px;font-weight:700;font-size:15px;max-width:100%}
+  border-radius:999px;padding:9px 12px;min-height:44px;font-weight:700;font-size:15px;max-width:100%}
 .word .wi{font-size:17px;line-height:1;flex:none}
 .word .wi img{width:20px;height:20px;border-radius:4px;object-fit:cover;display:block}
 .word .wt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
-.word .wx{width:20px;height:20px;border-radius:50%;background:var(--blue-l);color:var(--muted);
-  font-size:14px;line-height:18px;text-align:center;flex:none}
+.word .wx{width:24px;height:24px;border-radius:50%;background:var(--blue-l);color:var(--muted);
+  font-size:15px;line-height:22px;text-align:center;flex:none}
 .strip .sa{display:flex;gap:6px;flex:1 1 100%;justify-content:flex-end;flex-wrap:wrap}
-.strip .sa button{border:0;border-radius:10px;height:38px;padding:0 12px;font-weight:700;font-size:14px;
+.strip .sa button{border:0;border-radius:10px;height:44px;padding:0 14px;font-weight:700;font-size:14px;
   display:flex;align-items:center;gap:6px;white-space:nowrap;flex:none}
 .strip .sa .s-speak{background:#fff;color:var(--blue-d)}
 .strip .sa .s-ghost{background:rgba(255,255,255,.2);color:#fff}
@@ -123,7 +123,7 @@ header .logo-slot{width:58px;height:58px;border-color:rgba(255,255,255,.55);colo
 .updbar .ut b{display:block}
 .updbar .ut small{display:block;color:rgba(255,255,255,.82);font-weight:600;letter-spacing:.05em;font-size:10.5px;margin-top:3px}
 .updbar .ua{display:flex;gap:8px;margin-left:auto}
-.updbar button{border:0;border-radius:10px;height:38px;padding:0 14px;font-weight:700;font-size:14px;white-space:nowrap;flex:none}
+.updbar button{border:0;border-radius:10px;height:44px;padding:0 14px;font-weight:700;font-size:14px;white-space:nowrap;flex:none}
 @media (max-width:420px){ .updbar .ua{flex:1 1 100%;justify-content:flex-end} }
 .updbar .u-now{background:#fff;color:var(--blue-d)}
 .updbar .u-later{background:rgba(255,255,255,.18);color:#fff}
@@ -137,7 +137,7 @@ p.v-sub{margin:0 0 14px;color:var(--muted);font-size:14px}
 
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px;color:var(--blue-d)}
+.chip{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:12px 16px;font-weight:600;font-size:14px;color:var(--blue-d)}
 .chip[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(140px * var(--tile)),1fr));gap:12px}
@@ -149,7 +149,7 @@ p.v-sub{margin:0 0 14px;color:var(--muted);font-size:14px}
 .tile .em{font-size:calc(38px * var(--tile));line-height:1}
 .tile .en{font-weight:700;font-size:calc(15px * var(--tile));color:var(--ink);line-height:1.2}
 .tile .loc{font-size:calc(13px * var(--tile));color:var(--blue);font-weight:600;line-height:1.25}
-.tile .del{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;border:0;background:var(--blue-l);color:var(--muted);font-size:16px;line-height:1}
+.tile .del{position:absolute;top:5px;right:5px;width:34px;height:34px;border-radius:50%;border:0;background:var(--blue-l);color:var(--muted);font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center}
 .tile.add{border-style:dashed;color:var(--blue);background:transparent;box-shadow:none}
 /* photo cards */
 .tile .em.pic{width:calc(62px * var(--tile));height:calc(62px * var(--tile));border-radius:12px;overflow:hidden;
@@ -412,7 +412,7 @@ nav.tabs button.sosn{color:var(--red)}
         <dt>Application</dt><dd>COMMUNICATE AI</dd>
         <dt>Institution</dt><dd>SRI PRATIBHA HIGH SCHOOL</dd>
         <dt>Category</dt><dd>Assistive Technology</dd>
-        <dt>Version</dt><dd id="appVer">2.1.0</dd>
+        <dt>Version</dt><dd id="appVer">2.1.1</dd>
         <dt>Privacy</dt><dd>All data stays on this device.</dd>
       </dl>
     </div>
@@ -572,7 +572,7 @@ nav.tabs button.sosn{color:var(--red)}
 "use strict";
 const SCHOOL = "SRI PRATIBHA HIGH SCHOOL";
 /* keep in step with VERSION in sw.js — the deploy workflow checks they match */
-const APP_VERSION = "2.1.0";
+const APP_VERSION = "2.1.1";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 
 /* ---------- storage (safe) ---------- */
