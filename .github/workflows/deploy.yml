@@ -25,10 +25,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the service worker version was bumped
+      - name: Check versions and school branding
         run: |
-          echo "Service worker version:"
-          grep -E 'const VERSION' sw.js || (echo "::error::VERSION missing from sw.js" && exit 1)
+          SW=$(sed -n 's/.*const VERSION *= *"\([^"]*\)".*/\1/p' sw.js | head -1)
+          APP=$(sed -n 's/.*const APP_VERSION *= *"\([^"]*\)".*/\1/p' index.html | head -1)
+          echo "sw.js VERSION      = ${SW:-<missing>}"
+          echo "index.html VERSION = ${APP:-<missing>}"
+          [ -n "$SW" ]  || { echo "::error::VERSION missing from sw.js"; exit 1; }
+          [ -n "$APP" ] || { echo "::error::APP_VERSION missing from index.html"; exit 1; }
+          [ "$SW" = "$APP" ] || { echo "::error::Version mismatch: sw.js=$SW index.html=$APP. Bump both."; exit 1; }
+
+          # mandatory school branding must never be removed
+          for f in index.html manifest.webmanifest; do
+            grep -q "SRI PRATIBHA HIGH SCHOOL" "$f" \
+              || { echo "::error::School name missing from $f"; exit 1; }
+          done
+          grep -q "An Assistive Technology Initiative by SRI PRATIBHA HIGH SCHOOL" index.html \
+            || { echo "::error::Initiative line missing from index.html"; exit 1; }
+          grep -q "EVERY VOICE DESERVES TO BE HEARD" index.html \
+            || { echo "::error::Tagline missing from index.html"; exit 1; }
+          echo "Branding OK: $(grep -c 'SRI PRATIBHA HIGH SCHOOL' index.html) references in index.html"
 
       - uses: actions/configure-pages@v5
 

@@ -102,9 +102,14 @@ header .logo-slot{width:58px;height:58px;border-color:rgba(255,255,255,.55);colo
 /* ---------- Update banner ---------- */
 .updbar{position:fixed;left:12px;right:12px;bottom:calc(74px + var(--safe-b));z-index:70;background:var(--blue-d);color:#fff;
   border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(7,50,115,.45)}
-.updbar.show{display:flex}
-.updbar .ut{flex:1;font-size:14px;font-weight:600;line-height:1.3}
-.updbar button{border:0;border-radius:10px;height:38px;padding:0 14px;font-weight:700;font-size:14px}
+.updbar.show{display:flex;flex-wrap:wrap}
+.updbar .logo-slot{flex:none;width:40px;height:40px;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1);color:rgba(255,255,255,.85)}
+.updbar .ut{flex:1;min-width:0;font-size:14px;font-weight:600;line-height:1.25}
+.updbar .ut b{display:block}
+.updbar .ut small{display:block;color:rgba(255,255,255,.82);font-weight:600;letter-spacing:.05em;font-size:10.5px;margin-top:3px}
+.updbar .ua{display:flex;gap:8px;margin-left:auto}
+.updbar button{border:0;border-radius:10px;height:38px;padding:0 14px;font-weight:700;font-size:14px;white-space:nowrap;flex:none}
+@media (max-width:420px){ .updbar .ua{flex:1 1 100%;justify-content:flex-end} }
 .updbar .u-now{background:#fff;color:var(--blue-d)}
 .updbar .u-later{background:rgba(255,255,255,.18);color:#fff}
 
@@ -392,7 +397,7 @@ nav.tabs button.sosn{color:var(--red)}
         <dt>Application</dt><dd>COMMUNICATE AI</dd>
         <dt>Institution</dt><dd>SRI PRATIBHA HIGH SCHOOL</dd>
         <dt>Category</dt><dd>Assistive Technology</dd>
-        <dt>Version</dt><dd>1.0.0</dd>
+        <dt>Version</dt><dd id="appVer">2.0.0</dd>
         <dt>Privacy</dt><dd>All data stays on this device.</dd>
       </dl>
     </div>
@@ -470,6 +475,7 @@ nav.tabs button.sosn{color:var(--red)}
 <div class="overlay sheet-bg" id="addSheet" role="dialog" aria-modal="true" aria-labelledby="addTitle">
   <div class="sheet">
     <h3 id="addTitle">Add My Phrase</h3>
+    <div style="color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.06em">COMMUNICATE AI · SRI PRATIBHA HIGH SCHOOL</div>
     <label class="fl" for="addText">Phrase</label>
     <input class="f" id="addText" placeholder="e.g. My name is Ravi" maxlength="120">
 
@@ -519,9 +525,12 @@ nav.tabs button.sosn{color:var(--red)}
 </div>
 
 <div class="updbar" id="updBar" role="alert">
-  <div class="ut"><b>New version available</b><br>Update to get the latest phrases and fixes.</div>
-  <button class="u-later" id="updLater">Later</button>
-  <button class="u-now" id="updNow">Update</button>
+  <div class="logo-slot" data-logo></div>
+  <div class="ut"><b>New version available</b><small>COMMUNICATE AI · SRI PRATIBHA HIGH SCHOOL</small></div>
+  <div class="ua">
+    <button class="u-later" id="updLater">Later</button>
+    <button class="u-now" id="updNow">Update</button>
+  </div>
 </div>
 
 <div class="toast" id="toast" role="status"></div>
@@ -530,6 +539,8 @@ nav.tabs button.sosn{color:var(--red)}
 (() => {
 "use strict";
 const SCHOOL = "SRI PRATIBHA HIGH SCHOOL";
+/* keep in step with VERSION in sw.js — the deploy workflow checks they match */
+const APP_VERSION = "2.0.0";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 
 /* ---------- storage (safe) ---------- */
@@ -620,7 +631,7 @@ $$(".sheet-bg").forEach(o=>o.addEventListener("click",e=>{ if(e.target===o) o.cl
 function renderLogo(){
   $$("[data-logo]").forEach(el=>{
     if(S.logo){ el.innerHTML=""; const i=new Image(); i.src=S.logo; i.alt=SCHOOL+" logo"; el.appendChild(i); el.classList.add("has"); }
-    else { el.classList.remove("has"); el.innerHTML = (el.closest("footer")||el.closest(".install")) ? "" : "SCHOOL<br>LOGO"; }
+    else { el.classList.remove("has"); el.innerHTML = (el.closest("footer")||el.closest(".install")||el.closest(".updbar")) ? "" : "SCHOOL<br>LOGO"; }
   });
   $("#logoRemove").hidden = !S.logo;
   const l = document.querySelector('link[rel="icon"]'); if(S.logo && l){ l.href=S.logo; }
@@ -1048,6 +1059,7 @@ if("serviceWorker" in navigator && location.protocol.startsWith("http")){
 
 /* ---------- boot ---------- */
 $("#yr").textContent=new Date().getFullYear();
+$("#appVer").textContent=APP_VERSION;
 applySettings(); renderChips(); renderBoard(); renderSos(); renderHist(); renderSugg(); renderLogo(); renderStrip();
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") $$(".overlay.open").forEach(o=>o.classList.remove("open")); });
 setTimeout(()=>{ $("#splash").classList.add("hide"); renderLogo(); }, 2200);
